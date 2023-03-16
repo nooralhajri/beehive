@@ -10,22 +10,22 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <img src="https://svgsilh.com/svg/23431-ffc107.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+        <nav class="navbar navbar-expand-lg  bg-warning" >
+            <div class="container-fluid bg-warning"  >
+                <a class="navbar-brand" href="#" style="color: white;" >
+                    <img src="https://svgsilh.com/svg/23431-ffffff.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     BeeHive
                   </a>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="#" style="color: white;" >Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="#" style="color: white;" >Link</a>
                   </li>
                   <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white;" >
                       Dropdown
                     </a>
                     <ul class="dropdown-menu">
@@ -38,13 +38,21 @@
                 </ul>
                 <form class="d-flex" role="search">
                   <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
+                  <button class="btn btn-outline-light"" type="submit">Search</button>
                 </form>
               </div>
             </div>
           </nav>
     </header>
 
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+
     <h1>hello beehive</h1>
+
+
 </body>
 </html>
