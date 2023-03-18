@@ -1,6 +1,7 @@
 from django.urls import path
 from. import views
 
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('accounts/signup', views.signup, name='signup'),
@@ -15,5 +16,5 @@ urlpatterns = [
     path('channels/<int:pk>', views.ChannelDetail.as_view(), name='channels_detail'),
     path('channels/create', views.ChannelCreate.as_view(), name='channels_create'),
     path('channels/update/<int:pk>', views.ChannelUpdate.as_view(), name='channels_update'),
-    path('channels/delete/<int:pk>', views.ChannelDelete.as_view(), name='channels_delete')
+    path('channels/delete/<int:pk>', views.ChannelDelete.as_view(), name='channels_delete'),
 ]
