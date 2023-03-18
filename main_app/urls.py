@@ -4,7 +4,7 @@ from. import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('accounts/signup', views.signup, name='signup'),
+    path('accounts/signup/', views.signup, name='signup'),
 
     path('videos/', views.VideoList.as_view(), name='videos_index'),
     path('videos/<int:pk>', views.VideoDetail.as_view(), name='videos_detail'),
@@ -17,4 +17,8 @@ urlpatterns = [
     path('channels/create', views.ChannelCreate.as_view(), name='channels_create'),
     path('channels/update/<int:pk>', views.ChannelUpdate.as_view(), name='channels_update'),
     path('channels/delete/<int:pk>', views.ChannelDelete.as_view(), name='channels_delete'),
+
+    #change password 
+    path('accounts/change_password/', views.change_password, name='change_password'),
+    path('accounts/change_password_done/', views.change_password_done, name='change_password_done'),
 ]

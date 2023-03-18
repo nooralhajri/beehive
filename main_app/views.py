@@ -44,6 +44,11 @@ def change_password(request):
         form = PasswordChangeForm(user=request.user)
     return render(request, 'registration/change_password.html', {'form': form})
 
+@login_required
+def change_password_done(request):
+    return render(request, 'registration/change_password_done.html')
+
+
 # VIDEO CLASS BASED VIEWS
 class VideoList(ListView):
     model = Video
