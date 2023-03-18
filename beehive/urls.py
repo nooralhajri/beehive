@@ -6,10 +6,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main_app.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/signup/', include('main_app.urls')),
 
-    path('reset_password/', auth_views.PasswordResetView.as_view(), name="reset_password"),
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
+    path('accounts/change_password/', include('main_app.urls')),
+    path('accounts/change_password_done/', include('main_app.urls')),
 
+    path('accounts/password_reset/', include('main_app.urls')),
+    path('accounts/password_reset_done/', include('main_app.urls')),
+    path('accounts/password_reset_confirm/', include('main_app.urls')),
+    path('accounts/password_reset_complete/', include('main_app.urls')),
 ]
+
+

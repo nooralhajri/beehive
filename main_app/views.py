@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.contrib.auth import views as auth_views
 from .models import Channel, Video
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -30,6 +32,7 @@ def signup(request):
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
+
 # change password
 @login_required
 def change_password(request):
@@ -44,11 +47,12 @@ def change_password(request):
         form = PasswordChangeForm(user=request.user)
     return render(request, 'registration/change_password.html', {'form': form})
 
+
 @login_required
 def change_password_done(request):
     return render(request, 'registration/change_password_done.html')
 
-#user can reset their password
+# reset password
 def password_reset(request):
     return render(request, 'registration/password_reset.html')
 
@@ -60,6 +64,7 @@ def password_reset_confirm(request):
 
 def password_reset_complete(request):
     return render(request, 'registration/password_reset_complete.html')
+
 
 # VIDEO CLASS BASED VIEWS
 class VideoList(ListView):
@@ -107,3 +112,21 @@ class ChannelUpdate(UpdateView):
 class ChannelDelete(DeleteView):
     model = Channel
     success_url = '/'
+
+# Password reset views
+
+class PasswordResetView(auth_views.PasswordResetView):
+    template_name = 'registration/password_reset.html'
+    email_template_name = 'registration/password_reset_email.html'
+    subject_template_name = 'registration/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+
+class PasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'registration/password_reset_done.html'
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'registration/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'registration/password_reset_complete.html'
