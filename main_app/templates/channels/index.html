@@ -1,0 +1,28 @@
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>VIDEO LIST</h3>
+
+{% for channel in channels %}
+
+    <a href="{% url 'detail' channel.id %}">
+
+
+        <div class="card" style="width: 20rem;">
+
+            {% load static %}
+            <img src= {% static channel.profilephot|cut:'main_app/static/uploads/' %} class="card-img-top" alt="...">
+
+            <div class="card-body">
+                <span class="card-title"> {{channel.name}} </span>
+            </div>
+        </div>
+    </a>
+
+{% endfor %}
+
+
+{% endblock %}
