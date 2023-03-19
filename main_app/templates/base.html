@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BeeHive</title>
+    {% comment %} for dark theme {% endcomment %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/themes.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static '/css/style.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
@@ -14,6 +16,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg  bg-warning" >
+          <button id="theme-toggle">Toggle Dark Theme</button>
             <div class="container-fluid bg-warning"  >
                 <a class="navbar-brand" href="{% url 'home' %}" style="color: white;" >
                     <img src="https://svgsilh.com/svg/23431-ffffff.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
@@ -61,6 +64,28 @@
         <p>Copyright © 2023 BeeHive, Inc.</p>
       </div>
     </footer>
-
+    <script>
+      const THEME_KEY = 'beehive_theme';
+      const DARK_THEME = 'dark-theme';
+      
+      function toggleTheme() {
+        const theme = localStorage.getItem(THEME_KEY) === DARK_THEME ? '' : DARK_THEME;
+        localStorage.setItem(THEME_KEY, theme);
+        updateTheme();
+      }
+      
+      function updateTheme() {
+        const theme = localStorage.getItem(THEME_KEY) || '';
+        document.body.className = theme;
+      }
+      
+      // Initialize theme on page load
+      updateTheme();
+      
+      // Attach event listener to theme toggle button
+      const themeToggleButton = document.getElementById('theme-toggle');
+      themeToggleButton.addEventListener('click', toggleTheme);
+    </script>
+    
 </body>
 </html>
