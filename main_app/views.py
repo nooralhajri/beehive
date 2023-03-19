@@ -164,3 +164,5 @@ class SubscriberDelete(LoginRequiredMixin, DeleteView):
         channel_id = self.kwargs['channel_pk']
         user = self.request.user
         return Subscriber.objects.get(channel_id=channel_id, user=user)
+    
+    
