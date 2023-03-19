@@ -26,8 +26,6 @@ class Video(models.Model):
     def get_absolute_url(self):
         return reverse('videos_detail', kwargs={'pk': self.id})
 
-# Create your models here.
-
 
 
 class Subscriber(models.Model):

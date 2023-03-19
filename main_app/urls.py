@@ -34,4 +34,6 @@ urlpatterns = [
     # Subscriber URLs
     path('channels/<int:channel_pk>/subscribe/', views.SubscriberCreate.as_view(), name='subscribe'),
     path('channels/<int:channel_pk>/unsubscribe/', views.SubscriberDelete.as_view(), name='unsubscribe'),
+
+
 ]
