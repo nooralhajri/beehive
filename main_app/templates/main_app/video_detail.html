@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ video.title }}</h1>
 
 
 
@@ -10,6 +9,11 @@
 <video autoplay="autoplay" controls="controls" preload="preload">
     <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
 </video>
+<h1>{{ video.title }}</h1>
+<div class="card-action">
+    <a href="{% url 'videos_update' video.id %}">EDIT</a>
+    <a href="{% url 'videos_delete' video.id %}">DELETE</a>
+</div>
 
 
 

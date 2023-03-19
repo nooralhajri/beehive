@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth import views as auth_views
-from .models import Channel, Video
-from django.contrib.auth.forms import UserCreationForm
+from .models import Channel, Video, Subscriber, Comment
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import login
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # Create your views here.
 
@@ -131,3 +133,33 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'registration/password_reset_complete.html'
 
+
+# Add Comment Views
+class CommentCreate(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
+    template_name = 'main_app/comment_form.html'
+
+    def form_valid(self, form):
+        form.instance.video_id = self.kwargs['video_pk']
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+# Add Subscriber Views
+class SubscriberCreate(LoginRequiredMixin, CreateView):
+    model = Subscriber
+    fields = []
+
+    def form_valid(self, form):
+        form.instance.channel_id = self.kwargs['channel_pk']
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class SubscriberDelete(LoginRequiredMixin, DeleteView):
+    model = Subscriber
+    success_url = '/channels/'
+
+    def get_object(self):
+        channel_id = self.kwargs['channel_pk']
+        user = self.request.user
+        return Subscriber.objects.get(channel_id=channel_id, user=user)
