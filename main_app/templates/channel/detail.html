@@ -1,0 +1,41 @@
+{% comment %} 
+COMMENT FOR ALI:
+feel free to chenge the classes names
+{% endcomment %}
+
+{% extends 'base.html' %}
+{% block content %}
+<div class='channel-page'>
+    <div class='nav-holder'>
+        <nav class="">
+            <ul class="">
+                <li class=""><a class=""  href="{% url 'videos_create' %}">Add Video</li>
+                <li class=""><a class="" href="{% url 'channels_update' %}">Edit Channel</li>
+                <li class=""><a class="" href="{% url 'channels_delete' %}">Delete Channel</li>
+            </ul>
+        </nav>
+    </div>
+    <div class="channel-detail">
+        <div class="image-div">
+            {% load static %}
+            <img class="" width="100px" height="100px" src={% static channel.profilephoto| cut: 'main_app/static/' alt="profile pic"%} /> 
+        </div>
+        <div class="">
+            <h4 class="name">{{ channel.name }}</h4>
+            <p class="about">{{ channel.about }}</p>
+        </div>
+    </div>
+
+    <a class="video-detail-link" href="videos_detail">
+        <div class="videoList">
+            {% for vedio in channel.vedio_set.all %}
+            {% load static %}
+                <img class="" width="100px" height="100px" src={% static video.thumbnail| cut: 'main_app/static/' alt="profile pic"%} />
+                 <p class="">{{ vedio.name }}</p>
+                 <p class="">{{ vedio.date }}</p>
+            {% endfor %}
+        </div>
+    </a>
+
+</div>
+{% endblock  %}
