@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.validators import FileExtensionValidator
 
+
 # Create your models here.
 class Video(models.Model):
     title = models.CharField(max_length=100)
@@ -21,4 +22,5 @@ class Channel(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True)
+
 
