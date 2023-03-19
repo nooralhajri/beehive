@@ -15,12 +15,17 @@ class Channel(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'pk': self.id})
+
 
 class Video(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=250)
     thumbnail = models.ImageField(upload_to='main_app/static/uploads/', default='')
     video = models.FileField(upload_to='main_app/static/uploads/', null=True, validators=[FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
+
+    
 
     def get_absolute_url(self):
         return reverse('videos_detail', kwargs={'pk': self.id})
