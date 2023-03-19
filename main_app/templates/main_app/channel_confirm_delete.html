@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="" >Delete Channel</h1>
+
+    <h4 class="" >Are you sure you want to delete your channel: {{channel.name}}</h4>
+    <p class="" >Warning: All the uploaded videos will be discarded with the channel</p>
+
+    <form class="" action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Yes - Delete!" class="">
+        <a class="" href="{% url 'detail' channel.id %}">Cancel</a>
+    </form>
+{% endblock  %}

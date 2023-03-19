@@ -13,7 +13,7 @@ urlpatterns = [
     path('videos/update/<int:pk>', views.VideoUpdate.as_view(), name='videos_update'),
     path('videos/delete/<int:pk>', views.VideoDelete.as_view(), name='videos_delete'),
 
-    path('channels/', views.ChannelList.as_view(), name='channels_index'),
+    # path('channels/', views.ChannelList.as_view(), name='channels_index'),
     path('channels/<int:pk>', views.ChannelDetail.as_view(), name='channels_detail'),
     path('channels/create', views.ChannelCreate.as_view(), name='channels_create'),
     path('channels/update/<int:pk>', views.ChannelUpdate.as_view(), name='channels_update'),

@@ -10,12 +10,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+# from .forms import VideoForm
+
 
 # Create your views here.
 
 def home(request):
     return render(request, 'home.html')
 
+# Sign up function 
 
 def signup(request):
     error_message = ''
@@ -128,6 +131,14 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
 
-class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
-    template_name = 'registration/password_reset_complete.html'
+# class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+#     template_name = 'registration/password_reset_complete.html'
+# # Adding video to the channel funcion
+# def add_video(request, channel_id):
+#     form = VideoForm(request.POST)
+#     if form.is_valid():
+#         new_video = form.save(commit=False)
+#         new_video.channel_id = channel_id
+#         new_video.save()
+#     return redirect('detail', channel_id=channel_id)
 
