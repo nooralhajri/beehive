@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ video.title }}</h1>
+
+
+
+{% load static %}
+
+<video autoplay="autoplay" controls="controls" preload="preload">
+    <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
+</video>
+
+
+
+
+{% endblock %}
