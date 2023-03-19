@@ -78,7 +78,7 @@ class VideoList(ListView):
 
 class VideoCreate(CreateView):
     model = Video
-    fields = '__all__'
+    fields = ['title', 'description', 'thumbnail', 'video', 'channel']
     
     
 class VideoDetail(DetailView):
@@ -170,5 +170,4 @@ class SubscriberDelete(LoginRequiredMixin, DeleteView):
         channel_id = self.kwargs['channel_pk']
         user = self.request.user
         return Subscriber.objects.get(channel_id=channel_id, user=user)
-    
     
