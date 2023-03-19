@@ -12,12 +12,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+# from .forms import VideoForm
+
 
 # Create your views here.
 
 def home(request):
     return render(request, 'home.html')
 
+# Sign up function 
 
 def signup(request):
     error_message = ''
@@ -130,8 +133,6 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
 
-class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
-    template_name = 'registration/password_reset_complete.html'
 
 
 # Add Comment Views

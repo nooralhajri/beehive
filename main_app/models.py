@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.core.validators import FileExtensionValidator
 
 
+<<<<<<< HEAD
 class Channel(models.Model):
     name = models.CharField(max_length=100)
     about = models.TextField(max_length=250, default="")
@@ -24,11 +25,17 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         return reverse('videos_detail', kwargs={'pk': self.id})
+=======
+# Create your models here.
+
+    
+>>>>>>> b68baf7c394d66ee3a4f2a1ec4925c6344c80f8d
 
 
 class Subscriber(models.Model):
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+<<<<<<< HEAD
     created_at = models.DateTimeField(default="")
 
     class Meta:
@@ -50,3 +57,17 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+=======
+
+
+class Video(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(max_length=250)
+    thumbnail = models.ImageField(upload_to='main_app/static/uploads/', default='')
+    video = models.FileField(upload_to='main_app/static/uploads/', null=True, validators=[FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
+
+    def get_absolute_url(self):
+        return reverse('videos_detail', kwargs={'pk': self.id})
+
+    
+>>>>>>> b68baf7c394d66ee3a4f2a1ec4925c6344c80f8d
