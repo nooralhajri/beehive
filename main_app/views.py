@@ -131,14 +131,4 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
 
-# class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
-#     template_name = 'registration/password_reset_complete.html'
-# # Adding video to the channel funcion
-# def add_video(request, channel_id):
-#     form = VideoForm(request.POST)
-#     if form.is_valid():
-#         new_video = form.save(commit=False)
-#         new_video.channel_id = channel_id
-#         new_video.save()
-#     return redirect('detail', channel_id=channel_id)
 

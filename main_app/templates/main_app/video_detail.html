@@ -6,16 +6,22 @@
 
 {% load static %}
 
-<video autoplay="autoplay" controls="controls" preload="preload">
-    <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
-</video>
-<h1>{{ video.title }}</h1>
-<div class="card-action">
-    <a href="{% url 'videos_update' video.id %}">EDIT</a>
-    <a href="{% url 'videos_delete' video.id %}">DELETE</a>
+<div class="container">
+    <div class="row">
+        
+        <div class="col-4">
+            <video autoplay="autoplay" controls="controls" preload="preload" style="height: 33rem; width: 50rem; background-color: black; margin-top: 3rem;">
+                <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
+            </video>
+            <h1>{{ video.title }}</h1>
+            <div class="card-action">
+                <a href="{% url 'videos_update' video.id %}">EDIT</a>
+                <a href="{% url 'videos_delete' video.id %}">DELETE</a>
+            </div>
+        </div>
+
+
+    </div>
 </div>
-
-
-
 
 {% endblock %}
