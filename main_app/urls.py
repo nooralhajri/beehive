@@ -28,4 +28,10 @@ urlpatterns = [
     path('accounts/password_reset_done/', views.password_reset_done, name='password_reset_done'),
     path('accounts/password_reset_confirm/', views.password_reset_confirm, name='password_reset_confirm'),
     path('accounts/password_reset_complete/', views.password_reset_complete, name='password_reset_complete'),
+    
+    # Comment URLs
+    path('videos/<int:video_pk>/comment/', views.CommentCreate.as_view(), name='comment_create'),
+    # Subscriber URLs
+    path('channels/<int:channel_pk>/subscribe/', views.SubscriberCreate.as_view(), name='subscribe'),
+    path('channels/<int:channel_pk>/unsubscribe/', views.SubscriberDelete.as_view(), name='unsubscribe'),
 ]
