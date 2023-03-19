@@ -78,7 +78,7 @@ class VideoList(ListView):
 
 class VideoCreate(CreateView):
     model = Video
-    fields = '__all__'
+    fields = ['title', 'description', 'thumbnail', 'video', 'channel']
     
     
 class VideoDetail(DetailView):
@@ -96,17 +96,23 @@ class VideoDelete(DeleteView):
 
 
 # CHANNEL CLASS BASED VIEWS
-class ChannelList(ListView):
-    model = Channel
+def channels_index(request):
+    channels = Channel.objects.all()
+    return render(request, 'channels/index.html', {'channels': channels})
+
     
 
 class ChannelCreate(CreateView):
     model = Channel
     fields = '__all__'
+    success_url = '/channels/'
     
     
-class ChannelDetail(DetailView):
-    model = Channel
+def channels_detail(request, channel_id):
+    channel = Channel.objects.get(id=channel_id)
+    return render(request, 'channels/detail.html', {
+        'channel': channel,
+        })
 
 
 class ChannelUpdate(UpdateView):
@@ -116,7 +122,7 @@ class ChannelUpdate(UpdateView):
     
 class ChannelDelete(DeleteView):
     model = Channel
-    success_url = '/'
+    success_url = '/channels/'
 
 # Password reset views
 
@@ -164,3 +170,4 @@ class SubscriberDelete(LoginRequiredMixin, DeleteView):
         channel_id = self.kwargs['channel_pk']
         user = self.request.user
         return Subscriber.objects.get(channel_id=channel_id, user=user)
+    

@@ -4,7 +4,6 @@ from django.urls import reverse
 from django.core.validators import FileExtensionValidator
 
 
-
 class Channel(models.Model):
     name = models.CharField(max_length=100)
     about = models.TextField(max_length=250, default="")
@@ -52,3 +51,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'pk': self.id})
+

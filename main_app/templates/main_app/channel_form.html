@@ -1,4 +1,4 @@
-{% extends 'base,html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 
@@ -6,14 +6,15 @@
         <h1 class="">Edit My Channel: <span>{{object.name}}</span></h1>
     {% else %}
         <h1 class="">Create New Channel</h1>
-    {% endif %}
+    {% endif %} 
 
     <form class="" action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <table class="">
             {{ form.as_table}}
         </table>
-        <input class="" type="text" value="Submit!">
+        <input class="" type="submit" value="Submit!">
     </form>
 
 {% endblock  %}
+
