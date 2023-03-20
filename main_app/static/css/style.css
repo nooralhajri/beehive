@@ -2,8 +2,26 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    /* background-color: #ffc107; */
 }
 
 footer {
     margin-top: auto;
+    color: white;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+
+.footer-text {
+    position: relative;
+    top: .5rem;
+    font-size: 0.6rem;
+}
+
+h1 {
+    color: white;
 }

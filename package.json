@@ -1,0 +1,22 @@
+{
+  "name": "beehive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alinabeel23/beehive.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alinabeel23/beehive/issues"
+  },
+  "homepage": "https://github.com/alinabeel23/beehive#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.3"
+  }
+}

@@ -11,6 +11,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import CreateChannelForm
 
 # from .forms import VideoForm
 
@@ -104,7 +105,8 @@ def channels_index(request):
 
 class ChannelCreate(CreateView):
     model = Channel
-    fields = '__all__'
+    form_class = CreateChannelForm
+    # fields = '__all__'
     success_url = '/channels/'
     
     

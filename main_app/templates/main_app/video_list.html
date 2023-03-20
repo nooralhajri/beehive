@@ -4,26 +4,32 @@
 
 {% block content %}
 
-<h3>VIDEO LIST</h3>
 
-{% for video in video_list %}
+<div class="container-fluid">
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for video in video_list %}
 
-    <a href="{% url 'videos_detail' video.id %}">
+        <div class="col">
+        <a href="{% url 'videos_detail' video.id %}">
 
 
-        <div class="card" style="width: 20rem; height: 13rem; border: none;">
+            <div class="card" style="width: 20rem; height: 13rem; border: none;">
 
-            {% load static %}
-            <img src= {% static video.thumbnail|cut:'main_app/static/' %} class="card-img-top" alt="..." style="max-height: 100%; border-radius: 0.5rem;">
+                {% load static %}
+                <img src= {% static video.thumbnail|cut:'main_app/static/' %} class="card-img-top" alt="..." style="max-height: 100%; border-radius: 0.5rem;">
 
-            <div class="card-body">
             </div>
+            <span class="card-title"> {{video.title}} </span>
+
+        </a>
         </div>
-        <span class="card-title"> {{video.title}} </span>
+        {% endfor %}
+    </div>
 
-    </a>
+</div>
 
-{% endfor %}
+
 
 
 {% endblock %}
