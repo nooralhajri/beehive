@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.shortcuts import render, redirect,get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth import views as auth_views
 from .models import Channel, Video, Subscriber, Comment
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -83,6 +83,16 @@ class VideoCreate(CreateView):
     
 class VideoDetail(DetailView):
     model = Video
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        channel = self.object.channel
+        is_subscribed = False
+        if self.request.user.is_authenticated:
+            is_subscribed = Subscriber.objects.filter(channel=channel, user=self.request.user).exists()
+        context['is_subscribed'] = is_subscribed
+        return context
+
 
 
 class VideoUpdate(UpdateView):
@@ -107,13 +117,17 @@ class ChannelCreate(CreateView):
     fields = '__all__'
     success_url = '/channels/'
     
-    
+
+
 def channels_detail(request, channel_id):
     channel = Channel.objects.get(id=channel_id)
+    is_subscribed = False
+    if request.user.is_authenticated:
+        is_subscribed = Subscriber.objects.filter(channel=channel, user=request.user).exists()
     return render(request, 'channels/detail.html', {
         'channel': channel,
-        })
-
+        'is_subscribed': is_subscribed,
+    })
 
 class ChannelUpdate(UpdateView):
     model = Channel
@@ -140,7 +154,6 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     success_url = reverse_lazy('password_reset_complete')
 
 
-
 # Add Comment Views
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
@@ -151,6 +164,19 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         form.instance.video_id = self.kwargs['video_pk']
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+#to handle the deletion of comments   
+class CommentDelete(LoginRequiredMixin, DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        return reverse('videos_detail', kwargs={'pk': self.object.video.id})
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Comment.objects.all()
+        return Comment.objects.filter(user=self.request.user)
+
 
 # Add Subscriber Views
 class SubscriberCreate(LoginRequiredMixin, CreateView):

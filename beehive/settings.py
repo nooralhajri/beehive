@@ -134,3 +134,8 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # use environme
 # Password reset email templates
 PASSWORD_RESET_EMAIL_TEMPLATE_NAME = 'registration/password_reset_email.html'
 PASSWORD_RESET_SUBJECT_TEMPLATE_NAME = 'registration/password_reset_subject.txt'
+
+# Media settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+

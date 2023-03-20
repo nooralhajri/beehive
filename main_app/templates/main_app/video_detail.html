@@ -5,6 +5,26 @@
 
 
 {% load static %}
+{% comment %} to display the subscribe/unsubscribe button {% endcomment %}
+<div>
+    
+{% if user.is_authenticated %}
+  {% if is_subscribed %}
+    <form method="post" action="{% url 'unsubscribe' video.channel.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Unsubscribe</button>
+    </form>
+  {% else %}
+    <form method="post" action="{% url 'subscribe' video.channel.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+  {% endif %}
+{% else %}
+    <p>Please <a href="{% url 'login' %}">log in</a> to subscribe or unsubscribe.</p>
+{% endif %}
+
+</div>
 
 <div class="container">
     <div class="row">
@@ -23,5 +43,36 @@
 
     </div>
 </div>
-
+<div>
+<!-- Add a new comment -->
+{% if user.is_authenticated %}
+  <h3>Add a comment</h3>
+  <form method="post" action="{% url 'comment_create' video.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% else %}
+  <p>Please <a href="{% url 'login' %}">log in</a> to add a comment.</p>
+{% endif %}
+</div>
+<!-- Display comments -->
+<div>
+{% if video.comment_set.all %}
+  <h3>Comments:</h3>
+  <ul>
+    {% for comment in video.comment_set.all %}
+      <li>
+        <strong>{{ comment.user.username }}:</strong> {{ comment.content }}
+        {% if request.user == comment.user or request.user.is_staff %}
+          <form method="post" action="{% url 'comment_delete' comment.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+</div>
 {% endblock %}

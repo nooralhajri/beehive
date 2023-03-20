@@ -31,10 +31,10 @@ urlpatterns = [
     
     # Comment URLs
     path('videos/<int:video_pk>/comment/', views.CommentCreate.as_view(), name='comment_create'),
-    
+    path('comments/delete/<int:pk>/', views.CommentDelete.as_view(), name='comment_delete'),
+
     # Subscriber URLs
     path('channels/<int:channel_pk>/subscribe/', views.SubscriberCreate.as_view(), name='subscribe'),
     path('channels/<int:channel_pk>/unsubscribe/', views.SubscriberDelete.as_view(), name='unsubscribe'),
-
 
 ]
