@@ -1,13 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-
-
 {% load static %}
-{% comment %} to display the subscribe/unsubscribe button {% endcomment %}
+
 <div>
-    
+{% comment %} if user is logged in, can sub/unsub {% endcomment %}
 {% if user.is_authenticated %}
   {% if is_subscribed %}
     <form method="post" action="{% url 'unsubscribe' video.channel.id %}">
@@ -23,12 +20,10 @@
 {% else %}
     <p>Please <a href="{% url 'login' %}">log in</a> to subscribe or unsubscribe.</p>
 {% endif %}
-
 </div>
 
 <div class="container">
     <div class="row">
-        
         <div class="col-4">
             <video autoplay="autoplay" controls="controls" preload="preload" style="height: 33rem; width: 50rem; background-color: black; margin-top: 3rem;">
                 <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
@@ -39,12 +34,10 @@
                 <a href="{% url 'videos_delete' video.id %}">DELETE</a>
             </div>
         </div>
-
-
     </div>
 </div>
+
 <div>
-<!-- Add a new comment -->
 {% if user.is_authenticated %}
   <h3>Add a comment</h3>
   <form method="post" action="{% url 'comment_create' video.id %}">
@@ -56,7 +49,7 @@
   <p>Please <a href="{% url 'login' %}">log in</a> to add a comment.</p>
 {% endif %}
 </div>
-<!-- Display comments -->
+
 <div>
 {% if video.comment_set.all %}
   <h3>Comments:</h3>
@@ -75,4 +68,11 @@
   </ul>
 {% endif %}
 </div>
+
+<div class="like-dislike">
+    <!-- Adding like/dislike functionality-->
+    <button class="btn btn-success">Like</button>
+    <button class="btn btn-danger">Dislike</button>
+</div>
+
 {% endblock %}

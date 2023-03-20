@@ -4,14 +4,15 @@ from django.contrib.auth import views as auth_views
 from .models import Channel, Video, Subscriber, Comment
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import login
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormMixin
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CreateChannelForm, CreateVideoForm
+from .forms import CreateChannelForm, CreateVideoForm, CommentForm
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 # from .forms import VideoForm
 
@@ -83,19 +84,42 @@ class VideoCreate(CreateView):
     # fields = ['title', 'description', 'thumbnail', 'video', 'channel']
 
     
-class VideoDetail(DetailView):
+
+class VideoDetail(FormMixin, DetailView):
     model = Video
-    
+    form_class = CommentForm
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # Subscription status
         channel = self.object.channel
         is_subscribed = False
         if self.request.user.is_authenticated:
             is_subscribed = Subscriber.objects.filter(channel=channel, user=self.request.user).exists()
         context['is_subscribed'] = is_subscribed
+
+        # Comments
+        context['comments'] = Comment.objects.filter(video=self.object)
+
         return context
 
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.video = self.get_object()
+        form.save()
+        return HttpResponseRedirect(self.request.path)
+
+    
 
 class VideoUpdate(UpdateView):
     model = Video

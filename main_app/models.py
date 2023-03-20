@@ -19,6 +19,8 @@ class Video(models.Model):
     description = models.TextField(max_length=250)
     thumbnail = models.ImageField(upload_to='main_app/static/uploads/', default='')
     video = models.FileField(upload_to='main_app/static/uploads/', null=True, validators=[FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     tags = models.ManyToManyField('Tag', blank=True)
 
@@ -41,6 +43,8 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=500)
     created_at = models.DateTimeField(default="")
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.user.username}: {self.content}"
