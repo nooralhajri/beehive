@@ -15,7 +15,7 @@
     <div class="channel-detail">
         <div class="image-div">
             {% load static %}
-            <img class="" width="100px" height="100px" src={% static channel.profilephoto|cut:'main_app/static/uploads/' alt="profile pic"%} /> 
+            <img class="" width="100px" height="100px" src={% static channel.profilephoto|cut:'main_app/static/' alt="profile pic"%} /> 
         </div>
         <div class="">
             <h4 class="name">{{ channel.name }}</h4>

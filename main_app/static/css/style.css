@@ -3,6 +3,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     /* background-color: #ffc107; */
+    color: white;
 }
 
 footer {

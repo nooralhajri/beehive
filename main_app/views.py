@@ -19,10 +19,10 @@ from .forms import CreateChannelForm, CreateVideoForm
 # Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    videos = Video.objects.all()
+    return render(request, 'home.html', {'videos':videos})
 
 # Sign up function 
-
 def signup(request):
     error_message = ''
     if request.method == 'POST':
@@ -81,7 +81,7 @@ class VideoCreate(CreateView):
     model = Video
     form_class = CreateVideoForm
     # fields = ['title', 'description', 'thumbnail', 'video', 'channel']
-    
+
     
 class VideoDetail(DetailView):
     model = Video
