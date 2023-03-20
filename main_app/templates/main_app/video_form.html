@@ -14,10 +14,12 @@
     <table>
         {{ form.as_table }}
     </table>
+    <div class="form-group">
+        <label for="{{ form.tags.auto_id }}">Tags:</label>
+        {{ form.tags }}
+    </div>
     <input type="submit" class="btn btn-dark" value="ADD!">
 
 </form>
-
-
 
 {% endblock %}

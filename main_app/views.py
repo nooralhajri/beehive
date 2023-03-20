@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 from .models import Channel, Video, Subscriber, Comment
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import login
-from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormMixin
+from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormMixin, FormView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -13,8 +13,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CreateChannelForm, CreateVideoForm, CommentForm
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-
-# from .forms import VideoForm
 
 
 # Create your views here.
@@ -38,6 +36,14 @@ def signup(request):
     form = UserCreationForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
+
+
+# view for the user's profile
+@login_required
+def profile(request):
+    user = request.user
+    videos = Video.objects.filter(user=user)
+    return render(request, 'profile.html', {'user': user, 'videos': videos})
 
 
 # change password

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Channel, Video, Comment
+from .models import Channel, Tag, Video, Comment
 
 class CreateChannelForm(forms.ModelForm):
     class Meta:
@@ -33,7 +33,16 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['content']
 
+class VideoForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
     
+    class Meta:
+        model = Video
+        fields = ['title', 'video', 'thumbnail', 'tags'] 
 
 
 

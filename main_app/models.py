@@ -43,11 +43,13 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=500)
     created_at = models.DateTimeField(default="")
+    timestamp = models.DateTimeField(auto_now_add=True) # This ensures the timestamp is added automatically when the comment is created
     likes = models.PositiveIntegerField(default=0)
     dislikes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.user.username}: {self.content}"
+        return f'{self.user.username}: {self.content[:30]}'
+    
 
 
 class Tag(models.Model):
