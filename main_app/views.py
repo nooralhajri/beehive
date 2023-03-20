@@ -11,7 +11,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CreateChannelForm
+from .forms import CreateChannelForm, CreateVideoForm
 
 # from .forms import VideoForm
 
@@ -79,7 +79,8 @@ class VideoList(ListView):
 
 class VideoCreate(CreateView):
     model = Video
-    fields = ['title', 'description', 'thumbnail', 'video', 'channel']
+    form_class = CreateVideoForm
+    # fields = ['title', 'description', 'thumbnail', 'video', 'channel']
     
     
 class VideoDetail(DetailView):
@@ -108,6 +109,10 @@ class ChannelCreate(CreateView):
     form_class = CreateChannelForm
     # fields = '__all__'
     success_url = '/channels/'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
     
     
 def channels_detail(request, channel_id):

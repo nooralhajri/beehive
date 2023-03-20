@@ -12,3 +12,18 @@ class CreateChannelForm(forms.ModelForm):
             'profilephoto': forms.FileInput(attrs={'class': 'form-control'}), 
         }
 
+
+class CreateVideoForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ['title', 'description', 'video', 'thumbnail']
+
+
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}), 
+            'description': forms.Textarea(attrs={'class': 'form-control'}), 
+            'video': forms.FileInput(attrs={'class': 'form-control'}), 
+            'thumbnail': forms.FileInput(attrs={'class': 'form-control'}), 
+        }
+        
+
