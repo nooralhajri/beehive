@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-
-
 {% load static %}
 
+<div>
+    {% comment %} if user is logged in, can sub/unsub {% endcomment %}
+    {% if user.is_authenticated %}
+      {% csrf_token %}
+      <button id="subscribe_button" class="{% if is_subscribed %}btn btn-danger{% else %}btn btn-primary{% endif %}" onclick="toggleSubscribe();">
+        {% if is_subscribed %}Unsubscribe{% else %}Subscribe{% endif %}
+      </button>
+    {% else %}
+      <p>Please <a href="{% url 'login' %}">log in</a> to subscribe or unsubscribe.</p>
+    {% endif %}
+    </div>
+    
 <div class="container">
     <div class="row">
-        
         <div class="col-4">
             <video autoplay="autoplay" controls="controls" preload="preload" style="height: 33rem; width: 50rem; background-color: black; margin-top: 3rem;">
                 <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
@@ -19,9 +27,102 @@
                 <a href="{% url 'videos_delete' video.id %}">DELETE</a>
             </div>
         </div>
-
-
     </div>
 </div>
+
+<div>
+{% if user.is_authenticated %}
+  <h3>Add a comment</h3>
+  <form method="post" action="{% url 'comment_create' video.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% else %}
+  <p>Please <a href="{% url 'login' %}">log in</a> to add a comment.</p>
+{% endif %}
+</div>
+<div>
+{% for comment in video.comment_set.all|dictsort:"timestamp" %}
+   {% if video.comment_set.all %}
+    <h3>Comments:</h3>
+     <ul>
+        {% for comment in video.comment_set.all %}
+            <li>
+                <strong>{{ comment.user.username }}:</strong> {{ comment.content }}
+                {% if request.user == comment.user or request.user.is_staff %}
+                    <form method="post" action="{% url 'comment_delete' comment.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endfor %}
+</div>
+
+<div class="like-dislike">
+    <!-- Adding like/dislike functionality-->
+    <button class="btn btn-success">Like</button>
+    <button class="btn btn-danger">Dislike</button>
+</div>
+
+<script>
+    function toggleSubscribe() {
+      const subscribeButton = document.getElementById("subscribe_button");
+      const isSubscribed = subscribeButton.classList.contains("btn-danger");
+      const url = "{% url 'subscribe' video.channel.id %}";
+  
+      const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+          subscribe: !isSubscribed
+        })
+      };
+  
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "success") {
+            // Update button text and color
+            subscribeButton.textContent = isSubscribed ? "Subscribe" : "Unsubscribe";
+            subscribeButton.classList.toggle("btn-danger");
+            subscribeButton.classList.toggle("btn-primary");
+  
+            // Update the subscription count on the user's profile page.
+            // Replace 'subscription_count' with the appropriate ID or class.
+            const subscriptionCount = document.getElementById("subscription_count");
+            subscriptionCount.textContent = data.new_subscription_count;
+          } else {
+            console.error("Error updating subscription");
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  </script>
+  
+<script>
+    document.getElementById("comment_form").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      // Get the comment text and create a new comment element.
+      const commentText = document.getElementById("comment_text").value;
+      const newComment = document.createElement("li");
+      newComment.textContent = commentText;
+
+      // Add the new comment to the comment list.
+      document.getElementById("comment_list").appendChild(newComment);
+
+      // Clear the comment form.
+      document.getElementById("comment_text").value = "";
+    });
+  </script>
 
 {% endblock %}

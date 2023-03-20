@@ -21,10 +21,6 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50, unique=True)),
             ],
         ),
-        migrations.RemoveField(
-            model_name='channel',
-            name='video',
-        ),
         migrations.AddField(
             model_name='video',
             name='channel',

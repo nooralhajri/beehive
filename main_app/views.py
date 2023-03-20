@@ -1,19 +1,19 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.forms import ValidationError
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth import views as auth_views
-from .models import Channel, Video, Subscriber, Comment
+from .models import Channel, Dislike, Like, Playlist, Video, Subscriber, Comment
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import login
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormMixin, FormView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CreateChannelForm, CreateVideoForm
-
-# from .forms import VideoForm
+from .forms import CreateChannelForm, CreateVideoForm, CommentForm
+from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 
 
 # Create your views here.
@@ -37,6 +37,14 @@ def signup(request):
     form = UserCreationForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
+
+
+# view for the user's profile
+@login_required
+def profile(request):
+    user = request.user
+    videos = Video.objects.filter(user=user)
+    return render(request, 'profile.html', {'user': user, 'videos': videos})
 
 
 # change password
@@ -83,9 +91,42 @@ class VideoCreate(CreateView):
     # fields = ['title', 'description', 'thumbnail', 'video', 'channel']
 
     
-class VideoDetail(DetailView):
-    model = Video
 
+class VideoDetail(FormMixin, DetailView):
+    model = Video
+    form_class = CommentForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Subscription status
+        channel = self.object.channel
+        is_subscribed = False
+        if self.request.user.is_authenticated:
+            is_subscribed = Subscriber.objects.filter(channel=channel, user=self.request.user).exists()
+        context['is_subscribed'] = is_subscribed
+
+        # Comments
+        context['comments'] = Comment.objects.filter(video=self.object)
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.video = self.get_object()
+        form.save()
+        return HttpResponseRedirect(self.request.path)
+
+    
 
 class VideoUpdate(UpdateView):
     model = Video
@@ -114,13 +155,17 @@ class ChannelCreate(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-    
+
+
 def channels_detail(request, channel_id):
     channel = Channel.objects.get(id=channel_id)
+    is_subscribed = False
+    if request.user.is_authenticated:
+        is_subscribed = Subscriber.objects.filter(channel=channel, user=request.user).exists()
     return render(request, 'channels/detail.html', {
         'channel': channel,
-        })
-
+        'is_subscribed': is_subscribed,
+    })
 
 class ChannelUpdate(UpdateView):
     model = Channel
@@ -130,6 +175,27 @@ class ChannelUpdate(UpdateView):
 class ChannelDelete(DeleteView):
     model = Channel
     success_url = '/channels/'
+
+
+# Adding the 'subscribe' function view
+@login_required
+def subscribe(request, channel_id):
+    if request.method == 'POST':
+        channel = get_object_or_404(Channel, pk=channel_id)
+        user = request.user
+        subscribe = request.POST.get('subscribe', 'false') == 'true'
+
+        if subscribe:
+            channel.subscribers.add(user)
+            new_subscription_count = channel.subscribers.count()
+            return JsonResponse({'status': 'success', 'new_subscription_count': new_subscription_count})
+        else:
+            channel.subscribers.remove(user)
+            new_subscription_count = channel.subscribers.count()
+            return JsonResponse({'status': 'success', 'new_subscription_count': new_subscription_count})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 # Password reset views
 
@@ -147,7 +213,6 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     success_url = reverse_lazy('password_reset_complete')
 
 
-
 # Add Comment Views
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
@@ -159,22 +224,105 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+#to handle the deletion of comments   
+class CommentDelete(LoginRequiredMixin, DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        return reverse('videos_detail', kwargs={'pk': self.object.video.id})
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Comment.objects.all()
+        return Comment.objects.filter(user=self.request.user)
+
+
 # Add Subscriber Views
+
 class SubscriberCreate(LoginRequiredMixin, CreateView):
     model = Subscriber
     fields = []
+    template_name = 'main_app/subscriber_form.html'
 
     def form_valid(self, form):
         form.instance.channel_id = self.kwargs['channel_pk']
         form.instance.user = self.request.user
+        response_data = {}
+
+        try:
+            # Save the subscription.
+            self.object = form.save()
+            # Update the subscription count for the user.
+            new_subscription_count = self.request.user.subscriptions.count()
+            response_data = {
+                "status": "success",
+                "new_subscription_count": new_subscription_count
+            }
+        except ValidationError as e:
+            response_data = {"status": "error", "message": str(e)}
+
+        return JsonResponse(response_data)
+
+# Add Like Views
+class LikeCreate(LoginRequiredMixin, CreateView):
+    model = Like
+    fields = []
+
+    def form_valid(self, form):
+        form.instance.video_id = self.kwargs['video_pk']
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
-class SubscriberDelete(LoginRequiredMixin, DeleteView):
-    model = Subscriber
-    success_url = '/channels/'
+class LikeDelete(LoginRequiredMixin, DeleteView):
+    model = Like
+    success_url = '/videos/'
 
     def get_object(self):
-        channel_id = self.kwargs['channel_pk']
+        video_id = self.kwargs['video_pk']
         user = self.request.user
-        return Subscriber.objects.get(channel_id=channel_id, user=user)
+        return Like.objects.get(video_id=video_id, user=user)
+
+# Add Dislike Views
+class DislikeCreate(LoginRequiredMixin, CreateView):
+    model = Dislike
+    fields = []
+
+    def form_valid(self, form):
+        form.instance.video_id = self.kwargs['video_pk']
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class DislikeDelete(LoginRequiredMixin, DeleteView):
+    model = Dislike
+    success_url = '/videos/'
+
+    def get_object(self):
+        video_id = self.kwargs['video_pk']
+        user = self.request.user
+        return Dislike.objects.get(video_id=video_id, user=user)
+
+# Add Playlist Views
+class PlaylistCreate(LoginRequiredMixin, CreateView):
+    model = Playlist
+    fields = ['name']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class PlaylistUpdate(LoginRequiredMixin, UpdateView):
+    model = Playlist
+    fields = ['name']
+
+class PlaylistDelete(LoginRequiredMixin, DeleteView):
+    model = Playlist
+    success_url = '/playlists/'
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Playlist.objects.all()
+        return Playlist.objects.filter(user=self.request.user)
     
+
+        
+

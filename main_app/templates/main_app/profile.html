@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h2>User Profile</h2>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <hr>
+    <h3>{{ user.username }}'s Videos</h3>
+    {% if user.channel.video_set.all %}
+      <div class="row">
+        {% for video in user.channel.video_set.all %}
+          <div class="col-md-4">
+            <h4>{{ video.title }}</h4>
+            <video width="320" height="240" controls>
+              <source src="{% static video.video|cut:'main_app/static/' %}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p>{{ video.description }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>No videos uploaded.</p>
+    {% endif %}
+  </div>
+{% endblock %}

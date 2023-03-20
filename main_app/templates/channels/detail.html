@@ -15,21 +15,37 @@
     <div class="channel-detail">
         <div class="image-div">
             {% load static %}
-            <img class="" width="100px" height="100px" src={% static channel.profilephoto|cut:'main_app/static/' alt="profile pic"%} /> 
+            <img class="" width="100px" height="100px" src="{% static channel.profilephoto|cut:'main_app/static/' %}" alt="profile pic" /> 
         </div>
         <div class="">
             <h4 class="name">{{ channel.name }}</h4>
             <p class="about">{{ channel.about }}</p>
         </div>
     </div>
-
+<div>
+    {% if user.is_authenticated %}
+    {% if is_subscribed %}
+      <form method="post" action="{% url 'unsubscribe' channel.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Unsubscribe</button>
+      </form>
+    {% else %}
+      <form method="post" action="{% url 'subscribe' channel.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+      </form>
+    {% endif %}
+  {% else %}
+    <p>Please <a href="{% url 'login' %}">log in</a> to subscribe or unsubscribe.</p>
+  {% endif %}
+</div>
     <a class="video-detail-link" href="videos_detail" >
         <div class="videoList">
             {% for video in channel.video_set.all %}
             {% load static %}
-                <img class="" width="100px" height="100px" src={% static video.thumbnail|cut:'main_app/static/uploads' alt="profile pic"%} />
-                 <p class="">{{ vedio.name }}</p>
-                 <p class="">{{ vedio.date }}</p>
+                <img class="" width="100px" height="100px" src="{% static video.thumbnail|cut:'main_app/static/uploads' %}" alt="thumbnail" />
+                 <p class="">{{ video.title }}</p>
+                 <!-- <p class="">{{ video.uploaded_at }}</p> -->
             {% endfor %}
         </div>
     </a>

@@ -31,8 +31,22 @@ urlpatterns = [
     
     # Comment URLs
     path('videos/<int:video_pk>/comment/', views.CommentCreate.as_view(), name='comment_create'),
-    
+    path('comments/delete/<int:pk>/', views.CommentDelete.as_view(), name='comment_delete'),
+
     # Subscriber URLs
-    path('channels/<int:channel_pk>/subscribe/', views.SubscriberCreate.as_view(), name='subscribe'),
-    path('channels/<int:channel_pk>/unsubscribe/', views.SubscriberDelete.as_view(), name='unsubscribe'),
+    path('channels/<int:channel_id>/subscribe/', views.subscribe, name='subscribe'),
+    # path('channels/<int:channel_pk>/unsubscribe/', views.SubscriberDelete.as_view(), name='unsubscribe'),
+
+    # Like URLs
+    path('videos/<int:video_pk>/like/', views.LikeCreate.as_view(), name='like'),
+    path('videos/<int:video_pk>/unlike/', views.LikeDelete.as_view(), name='unlike'),
+
+    # # Search URL
+    # path('search/', views.search, name='search'),
+
+    # # profile URL
+    # path('profile/', views.profile, name='profile'),
+    # path('profile/update/<int:pk>', views.ProfileUpdate.as_view(), name='profile_update'),
+    # path('profile/delete/<int:pk>', views.ProfileDelete.as_view(), name='profile_delete'),
+
 ]
