@@ -3,12 +3,30 @@
 
 {% block content %}
 
+<div class="container-fluid">
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for video in videos %}
 
-<h1>hhello</h1>
+        <div class="col">
+        <a href="{% url 'videos_detail' video.id %}">
 
-<script src="/assets/vendor/jquery/jquery.min.js"></script>
-<script src="/assets/vendor/popper/popper.min.js"></script>
-<script src="/assets/vendor/bootstrap/bootstrap.min.js"></script>
+
+            <div style="width: 20rem; height: 11rem; border: none;">
+
+                {% load static %}
+                <img src= {% static video.thumbnail|cut:'main_app/static/' %} class="card-img-top" alt="..." style="max-height: 100%; border-radius: 0.5rem;">
+
+            </div>
+            <h4> {{video.title}} </h4>
+        </a>
+        <a> {{ video.channel }} </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
 
 
 

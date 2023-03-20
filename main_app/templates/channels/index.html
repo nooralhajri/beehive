@@ -14,7 +14,7 @@
         <div class="card" style="width: 20rem;">
 
             {% load static %}
-            <img src= {% static channel.profilephot|cut:'main_app/static/uploads/' %} class="card-img-top" alt="...">
+            <img class="" width="100px" height="100px" src={% static channel.profilephoto|cut:'main_app/static/' alt="profile pic"%} /> 
 
             <div class="card-body">
                 <span class="card-title"> {{channel.name}} </span>
