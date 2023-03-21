@@ -14,11 +14,20 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CreateChannelForm, CreateVideoForm, CommentForm
 from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 # Home view
 def home(request):
-    videos = Video.objects.all()
-    return render(request, 'home.html', {'videos': videos})
+    search_query = request.GET.get('q')
+    if search_query:
+        return redirect('search_results', search_query=search_query)
+    else:
+        videos = Video.objects.all()
+        paginator = Paginator(videos, 10)
+        page = request.GET.get('page')
+        videos = paginator.get_page(page)
+        return render(request, 'main_app/home.html', {'videos': videos})
 
 # Sign up function
 def signup(request):
@@ -60,6 +69,8 @@ def change_password(request):
 # Video class-based views
 class VideoList(ListView):
     model = Video
+    template_name = 'video_list.html'
+    paginate_by = 10  # Show 10 videos per page
 
 class VideoCreate(LoginRequiredMixin, CreateView):
     model = Video
@@ -150,7 +161,7 @@ class ChannelDetail(LoginRequiredMixin, DetailView):
         context['is_subscribed'] = is_subscribed
         return context
     
-    
+
 
 class ChannelUpdate(LoginRequiredMixin, UpdateView):
     model = Channel
@@ -230,6 +241,7 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
         return Comment.objects.filter(user=self.request.user)
 
 # Add Subscriber Views
+@login_required
 class SubscriberCreate(LoginRequiredMixin, CreateView):
     model = Subscriber
     fields = []
@@ -254,6 +266,7 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
         return JsonResponse(response_data)
 
 # Add Like Views
+@login_required
 class LikeCreate(LoginRequiredMixin, CreateView):
     model = Like
     fields = []
@@ -262,7 +275,8 @@ class LikeCreate(LoginRequiredMixin, CreateView):
         form.instance.video_id = self.kwargs['video_pk']
         form.instance.user = self.request.user
         return super().form_valid(form)
-
+    
+@login_required
 class LikeDelete(LoginRequiredMixin, DeleteView):
     model = Like
     success_url = '/videos/'
@@ -272,7 +286,10 @@ class LikeDelete(LoginRequiredMixin, DeleteView):
         user = self.request.user
         return Like.objects.get(video_id=video_id, user=user)
 
+
 # Add Dislike Views
+
+@login_required
 class DislikeCreate(LoginRequiredMixin, CreateView):
     model = Dislike
     fields = []
@@ -282,6 +299,7 @@ class DislikeCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+@login_required
 class DislikeDelete(LoginRequiredMixin, DeleteView):
     model = Dislike
     success_url = '/videos/'
@@ -292,6 +310,7 @@ class DislikeDelete(LoginRequiredMixin, DeleteView):
         return Dislike.objects.get(video_id=video_id, user=user)
 
 # Add Playlist Views
+
 class PlaylistCreate(LoginRequiredMixin, CreateView):
     model = Playlist
     fields = ['name']
@@ -300,9 +319,16 @@ class PlaylistCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class PlaylistUpdate(LoginRequiredMixin, UpdateView):
     model = Playlist
     fields = ['name']
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Playlist.objects.all()
+        return Playlist.objects.filter(user=self.request.user)
+    
 
 class PlaylistDelete(LoginRequiredMixin, DeleteView):
     model = Playlist
@@ -312,6 +338,7 @@ class PlaylistDelete(LoginRequiredMixin, DeleteView):
         if self.request.user.is_staff:
             return Playlist.objects.all()
         return Playlist.objects.filter(user=self.request.user)
+
 
 class PlaylistDetailView(LoginRequiredMixin, DetailView):
     model = Playlist
@@ -342,8 +369,10 @@ class PlaylistVideoDelete(LoginRequiredMixin, DeleteView):
             return PlaylistVideo.objects.all()
         return PlaylistVideo.objects.filter(user=self.request.user)
 
+
 class TagList(LoginRequiredMixin, ListView):
     model = Tag
+    
 
 class TagDetail(LoginRequiredMixin, DetailView):
     model = Tag
@@ -360,12 +389,29 @@ class TagDelete(LoginRequiredMixin, DeleteView):
     model = Tag
     success_url = reverse_lazy('tags_index')
 
-def search(request):
+
+# Search Views
+
+def search_results(request):
     query = request.GET.get('q')
+    videos = Video.search(query)
+    paginator = Paginator(videos, 10)
+    page = request.GET.get('page')
+    videos = paginator.get_page(page)
+    return render(request, 'search_results.html', {'videos': videos, 'query': query})
 
-    if query:
-        videos = Video.objects.filter(title__icontains=query)
-    else:
-        videos = Video.objects.all()
+# ADDING PAGINATION
+def my_view(request):
+    # Query all objects
+    objects = Video.objects.all()
 
-    return render(request, 'search.html', {'videos': videos})
+    # Create a Paginator object with 10 objects per page
+    paginator = Paginator(objects, 10)
+
+    # Get the current page number
+    page_number = request.GET.get('page')
+
+    # Get the Page object for the current page
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'video_list.html', {'page_obj': page_obj})

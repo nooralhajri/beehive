@@ -29,6 +29,13 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         return reverse('videos_detail', kwargs={'pk': self.id})
+    
+    def __str__(self):
+        return self.title
+    
+    @staticmethod
+    def search(query):
+        return Video.objects.filter(title__icontains=query)
 
 
 class Subscriber(models.Model):
