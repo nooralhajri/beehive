@@ -14,15 +14,10 @@ class CreateChannelForm(forms.ModelForm):
 
 
 class CreateVideoForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
-
     class Meta:
         model = Video
-        fields = ['title', 'description', 'video', 'thumbnail', 'channel', 'tags']
+        fields = ['title', 'description', 'video', 'thumbnail', 'channel']
+
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}), 
@@ -32,11 +27,22 @@ class CreateVideoForm(forms.ModelForm):
             'channel': forms.Select(attrs={'class': 'form-control'}), 
         }
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
 
-        widgets = {
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
-        }
+class VideoForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    
+    class Meta:
+        model = Video
+        fields = ['title', 'video', 'thumbnail', 'tags'] 
+
+
+

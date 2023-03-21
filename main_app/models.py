@@ -33,9 +33,6 @@ class Video(models.Model):
     def __str__(self):
         return self.title
     
-    @staticmethod
-    def search(query):
-        return Video.objects.filter(title__icontains=query)
 
 
 class Subscriber(models.Model):

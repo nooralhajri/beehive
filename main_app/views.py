@@ -27,7 +27,7 @@ def home(request):
         paginator = Paginator(videos, 10)
         page = request.GET.get('page')
         videos = paginator.get_page(page)
-        return render(request, 'main_app/home.html', {'videos': videos})
+        return render(request, 'home.html', {'videos': videos})
 
 # Sign up function
 def signup(request):
@@ -80,24 +80,6 @@ class VideoCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class VideoDetail(FormMixin, DetailView):
-    model = Video
-    form_class = CommentForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-       # Subscription status
-        channel = self.object.channel
-        is_subscribed = False
-        if self.request.user.is_authenticated:
-            is_subscribed = Subscriber.objects.filter(channel=channel, user=self.request.user).exists()
-        context['is_subscribed'] = is_subscribed
-
-        # Comments
-        context['comments'] = Comment.objects.filter(video=self.object)
-
-        return context
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -222,7 +204,7 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
-    template_name = 'main_app/comment_form.html'
+    template_name = 'comment_form.html'
 
     def form_valid(self, form):
         form.instance.video_id = self.kwargs['video_pk']
@@ -310,7 +292,6 @@ class DislikeDelete(LoginRequiredMixin, DeleteView):
         return Dislike.objects.get(video_id=video_id, user=user)
 
 # Add Playlist Views
-
 class PlaylistCreate(LoginRequiredMixin, CreateView):
     model = Playlist
     fields = ['name']
@@ -415,3 +396,9 @@ def my_view(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'video_list.html', {'page_obj': page_obj})
+
+
+def comments (request, video_id):
+    video = Video.objects.get(id=video_id)
+    comments = Comment.objects.filter(video=video)
+    return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 

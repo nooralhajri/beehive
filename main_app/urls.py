@@ -8,7 +8,7 @@ urlpatterns = [
     path('accounts/signup/', views.signup, name='signup'),
 
     path('videos/', views.VideoList.as_view(), name='videos_index'),
-    path('videos/<int:pk>', views.VideoDetail.as_view(), name='videos_detail'),
+    path('videos/<int:video_id>', views.comments, name='comments'),
     path('videos/create', views.VideoCreate.as_view(), name='videos_create'),
     path('videos/update/<int:pk>', views.VideoUpdate.as_view(), name='videos_update'),
     path('videos/delete/<int:pk>', views.VideoDelete.as_view(), name='videos_delete'),
@@ -39,8 +39,8 @@ urlpatterns = [
     ), name='password_reset_email'),
 
     # Comment URLs
-    path('videos/<int:video_pk>/comment/', views.CommentCreate.as_view(), name='comment_create'),
-    path('comments/delete/<int:pk>/', views.CommentDelete.as_view(), name='comment_delete'),
+    path('videos/<int:video_pk>', views.CommentCreate.as_view(), name='comment_create'),
+    # path('comments/delete/<int:pk>/', views.CommentDelete.as_view(), name='comment_delete'),
 
     # Subscriber URLs
     path('channels/<int:channel_id>/subscribe/', views.subscribe, name='subscribe'),
