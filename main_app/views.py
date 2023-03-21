@@ -120,16 +120,25 @@ def channels_index(request):
     channels = Channel.objects.all()
     return render(request, 'channels/index.html', {'channels': channels})
 
-class ChannelCreate(LoginRequiredMixin, CreateView):
+def channels_detail(request, channel_id):
+    channel = Channel.objects.get(id=channel_id)
+    is_subscribed = False
+    if request.user.is_authenticated:
+        is_subscribed = Subscriber.objects.filter(channel=channel, user=request.user).exists()
+    return render(request, 'channels/detail.html', {
+        'channel': channel,
+        'is_subscribed': is_subscribed,
+    }) 
+
+class ChannelCreate(CreateView):
     model = Channel
     form_class = CreateChannelForm
+    # fields = '__all__'
+    success_url = '/channels/'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-    
-    def get_success_url(self):
-        return reverse('channels_detail', kwargs={'pk': self.object.id})
 
 class ChannelDetail(LoginRequiredMixin, DetailView):
     model = Channel
@@ -145,24 +154,14 @@ class ChannelDetail(LoginRequiredMixin, DetailView):
     
 
 
-class ChannelUpdate(LoginRequiredMixin, UpdateView):
+class ChannelUpdate(UpdateView):
     model = Channel
-    form_class = CreateChannelForm
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-class ChannelDelete(LoginRequiredMixin, DeleteView):
+    fields = '__all__'
+    
+    
+class ChannelDelete(DeleteView):
     model = Channel
-
-    def get_success_url(self):
-        return reverse('channels_index')
-
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Channel.objects.all()
-        return Channel.objects.filter(user=self.request.user)
+    success_url = '/channels/'
 
 @login_required
 def subscribe(request, channel_id):
