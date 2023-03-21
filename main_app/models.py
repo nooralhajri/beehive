@@ -46,9 +46,7 @@ class Comment(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField(max_length=500)
-    created_at = models.DateTimeField(default=django.utils.timezone.now)
-    likes = models.PositiveIntegerField(default=0)
-    dislikes = models.PositiveIntegerField(default=0)
+
 
     def get_absolute_url(self):
         return reverse('videos_detail', kwargs={'pk': self.video.id})
