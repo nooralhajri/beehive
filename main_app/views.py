@@ -131,19 +131,22 @@ class ChannelCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('channels_detail', kwargs={'pk': self.object.id})
 
-class ChannelDetail(LoginRequiredMixin, DetailView):
-    model = Channel
+# class ChannelDetail(LoginRequiredMixin, DetailView):
+#     model = Channel
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        channel = self.object
-        is_subscribed = False
-        if self.request.user.is_authenticated:
-            is_subscribed = Subscriber.objects.filter(channel=channel, user=self.request.user).exists()
-        context['is_subscribed'] = is_subscribed
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         channel = self.object
+#         is_subscribed = False
+#         if self.request.user.is_authenticated:
+#             is_subscribed = Subscriber.objects.filter(channel=channel, user=self.request.user).exists()
+#         context['is_subscribed'] = is_subscribed
+#         return context
     
-
+def channel_detail(request, channel_id):
+    print("channel, ", channel_id)
+    channel = Channel.objects.get(id = channel_id)
+    return render (request, 'channels/detail.html', {'channel': channel})
 
 class ChannelUpdate(LoginRequiredMixin, UpdateView):
     model = Channel
