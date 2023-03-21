@@ -355,21 +355,11 @@ class TagList(LoginRequiredMixin, ListView):
     model = Tag
     
 
-class TagDetail(LoginRequiredMixin, DetailView):
-    model = Tag
 
-class TagCreate(LoginRequiredMixin, CreateView):
-    model = Tag
-    fields = ['name']
-
-class TagUpdate(LoginRequiredMixin, UpdateView):
-    model = Tag
-    fields = ['name']
-
-class TagDelete(LoginRequiredMixin, DeleteView):
-    model = Tag
-    success_url = reverse_lazy('tags_index')
-
+def comments (request, video_id):
+    video = Video.objects.get(id=video_id)
+    comments = Comment.objects.filter(video=video)
+    return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
 
 # Search Views
 

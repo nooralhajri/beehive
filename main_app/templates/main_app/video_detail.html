@@ -43,13 +43,13 @@
 </div>
 
 <div>
-  <ul>
-{%for c in comments%}
-  
-    <li>{{c.content}}</li>
- 
-{% endfor %}
- </ul>
+    <ul>
+        {%for c in comments%}
+          
+            <li>{{c.content}}</li>
+         
+        {% endfor %}
+         </ul>
 </div>
 
 
@@ -59,44 +59,5 @@
     <button class="btn btn-danger">Dislike</button>
 </div>
 
-<script>
-    function toggleSubscribe() {
-      const subscribeButton = document.getElementById("subscribe_button");
-      const isSubscribed = subscribeButton.classList.contains("btn-danger");
-      const url = "{% url 'subscribe' video.channel.id %}";
-  
-      const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken
-        },
-        body: JSON.stringify({
-          subscribe: !isSubscribed
-        })
-      };
-  
-      fetch(url, requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "success") {
-            // Update button text and color
-            subscribeButton.textContent = isSubscribed ? "Subscribe" : "Unsubscribe";
-            subscribeButton.classList.toggle("btn-danger");
-            subscribeButton.classList.toggle("btn-primary");
-  
-            // Update the subscription count on the user's profile page.
-            // Replace 'subscription_count' with the appropriate ID or class.
-            const subscriptionCount = document.getElementById("subscription_count");
-            subscriptionCount.textContent = data.new_subscription_count;
-          } else {
-            console.error("Error updating subscription");
-          }
-        })
-        .catch((error) => console.error("Error:", error));
-    }
-  </script>
-  
 
 {% endblock %}
