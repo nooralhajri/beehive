@@ -28,6 +28,7 @@ def home(request):
         page = request.GET.get('page')
         videos = paginator.get_page(page)
         return render(request, 'home.html', {'videos': videos})
+    
 
 # Sign up function
 def signup(request):
@@ -72,10 +73,12 @@ class VideoList(ListView):
     template_name = 'video_list.html'
     paginate_by = 10  # Show 10 videos per page
 
-class VideoCreate(LoginRequiredMixin, CreateView):
+class VideoCreate(CreateView):
     model = Video
     form_class = CreateVideoForm
 
+class VideoDetail(DetailView):
+    model = Video
 
 class VideoUpdate(LoginRequiredMixin, UpdateView):
     model = Video
@@ -261,5 +264,5 @@ def my_view(request):
     # Get the Page object for the current page
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'video_list.html', {'page_obj': page_obj})
+    return render(request, 'home.html', {'page_obj': page_obj})
 

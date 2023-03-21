@@ -6,27 +6,40 @@
 
 
 <div class="container-fluid">
+    <div class="container-fluid">
     
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for video in video_list %}
-
-        <div class="col">
-        <a href="{% url 'videos_detail' video.id %}">
-
-            <div class="card" style="width: 20rem; height: 13rem; border: none;">
-
-                {% load static %}
-                <img src= {% static video.thumbnail|cut:'main_app/static/' %} class="card-img-top" alt="..." style="max-height: 100%; border-radius: 0.5rem;">
-
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for video in video_list %}
+    
+            <div class="col">
+            <a href="{% url 'videos_detail' video.id %}">
+    
+    
+                <div style="width: 20rem; height: 11rem; border: none;">
+    
+                    {% load static %}
+                    <img src= {% static video.thumbnail|cut:'main_app/static/' %} class="card-img-top" alt="..." style="max-height: 100%; border-radius: 0.5rem;">
+    
+                </div>
+                
+                <div class="container">
+                    <div class="row" style="position: relative; bottom: 1.7rem; right: 0.75rem;">
+                        <div class="col">
+                            <img style="border-radius: 50%; width: 3rem; height: 3rem; position: relative; left: 1.5rem;"  src={% static video.channel.profilephoto|cut:'main_app/static/' %} alt="profile pic" /> 
+                        </div>
+                        <div class="col">
+                            <h4 style="margin-top: 0.5rem;">{{video.title}} </h4>
+                            <a href="/channels/{{ video.channel.id }}" style="margin-top: -1rem;"> {{ video.channel }} </a>
+                        </div>
+                    </div>
+                </div>
+    
+    
             </div>
-            <span class="card-title"> {{video.title}} </span>
-
-        </a>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-
-</div>
+    
+        <div>
 
 {% comment %} <div>
     {% comment %} pagination {% endcomment %}
