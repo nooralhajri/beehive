@@ -48,24 +48,6 @@ urlpatterns = [
     # Search URL
     path('search/', views.search_results, name='search_results'),
 
-    # Playlist URLs
-    path('playlists/', views.PlaylistListView.as_view(), name='playlists_index'),
-    path('playlists/<int:pk>', views.PlaylistDetailView.as_view(), name='playlists_detail'),
-    path('playlists/create', views.PlaylistCreate.as_view(), name='playlists_create'),
-    path('playlists/update/<int:pk>', views.PlaylistUpdate.as_view(), name='playlists_update'),
-    path('playlists/delete/<int:pk>', views.PlaylistDelete.as_view(), name='playlists_delete'),
-
-    # PlaylistVideo URLs
-    path('playlists/<int:playlist_pk>/add_video/', views.PlaylistVideoCreate.as_view(), name='playlistvideo_create'),
-    path('playlists/<int:playlist_pk>/remove_video/<int:pk>/', views.PlaylistVideoDelete.as_view(), name='playlistvideo_delete'),
-
-    # Tag URL
-    path('tags/', views.TagList.as_view(), name='tags_index'),
-    path('tags/<int:pk>', views.TagDetail.as_view(), name='tags_detail'),
-    path('tags/create', views.TagCreate.as_view(), name='tags_create'),
-    path('tags/update/<int:pk>', views.TagUpdate.as_view(), name='tags_update'),
-    path('tags/delete/<int:pk>', views.TagDelete.as_view(), name='tags_delete'),
-
     #pagination url
     path('videos/page/<int:page>/', views.VideoList.as_view(), name='videos_index'),
 ]

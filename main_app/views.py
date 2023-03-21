@@ -2,7 +2,7 @@ from django.forms import ValidationError
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import views as auth_views
-from .models import Channel, Dislike, Like, Playlist, Tag, Video, Subscriber, Comment, PlaylistVideo
+from .models import Channel, Video, Subscriber, Comment
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import login
 from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormMixin, FormView
@@ -204,7 +204,6 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
-    template_name = 'comment_form.html'
 
     def form_valid(self, form):
         form.instance.video_id = self.kwargs['video_pk']
@@ -247,115 +246,6 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
 
         return JsonResponse(response_data)
 
-# Add Like Views
-@login_required
-class LikeCreate(LoginRequiredMixin, CreateView):
-    model = Like
-    fields = []
-
-    def form_valid(self, form):
-        form.instance.video_id = self.kwargs['video_pk']
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-    
-@login_required
-class LikeDelete(LoginRequiredMixin, DeleteView):
-    model = Like
-    success_url = '/videos/'
-
-    def get_object(self):
-        video_id = self.kwargs['video_pk']
-        user = self.request.user
-        return Like.objects.get(video_id=video_id, user=user)
-
-
-# Add Dislike Views
-
-@login_required
-class DislikeCreate(LoginRequiredMixin, CreateView):
-    model = Dislike
-    fields = []
-
-    def form_valid(self, form):
-        form.instance.video_id = self.kwargs['video_pk']
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-@login_required
-class DislikeDelete(LoginRequiredMixin, DeleteView):
-    model = Dislike
-    success_url = '/videos/'
-
-    def get_object(self):
-        video_id = self.kwargs['video_pk']
-        user = self.request.user
-        return Dislike.objects.get(video_id=video_id, user=user)
-
-# Add Playlist Views
-class PlaylistCreate(LoginRequiredMixin, CreateView):
-    model = Playlist
-    fields = ['name']
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-
-class PlaylistUpdate(LoginRequiredMixin, UpdateView):
-    model = Playlist
-    fields = ['name']
-
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Playlist.objects.all()
-        return Playlist.objects.filter(user=self.request.user)
-    
-
-class PlaylistDelete(LoginRequiredMixin, DeleteView):
-    model = Playlist
-    success_url = '/playlists/'
-
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Playlist.objects.all()
-        return Playlist.objects.filter(user=self.request.user)
-
-
-class PlaylistDetailView(LoginRequiredMixin, DetailView):
-    model = Playlist
-
-class PlaylistListView(LoginRequiredMixin, ListView):
-    model = Playlist
-
-    def get_queryset(self):
-        return Playlist.objects.filter(user=self.request.user)
-
-class PlaylistVideoCreate(LoginRequiredMixin, CreateView):
-    model = PlaylistVideo
-    fields = ['video']
-
-    def form_valid(self, form):
-        form.instance.playlist_id = self.kwargs['playlist_pk']
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-class PlaylistVideoDelete(LoginRequiredMixin, DeleteView):
-    model = PlaylistVideo
-
-    def get_success_url(self):
-        return reverse('playlists_detail', kwargs={'pk': self.object.playlist.id})
-
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return PlaylistVideo.objects.all()
-        return PlaylistVideo.objects.filter(user=self.request.user)
-
-
-class TagList(LoginRequiredMixin, ListView):
-    model = Tag
-    
-
-
 def comments (request, video_id):
     video = Video.objects.get(id=video_id)
     comments = Comment.objects.filter(video=video)
@@ -387,8 +277,3 @@ def my_view(request):
 
     return render(request, 'video_list.html', {'page_obj': page_obj})
 
-
-def comments (request, video_id):
-    video = Video.objects.get(id=video_id)
-    comments = Comment.objects.filter(video=video)
-    return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
