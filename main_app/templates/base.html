@@ -36,9 +36,9 @@
   </style>
 
 </head>
-<body id="theme-body" class="bg-primary {% if request.COOKIES.dark_mode %}dark{% endif %}">    <header>
+<body class="bg-primary d-flex flex-column min-vh-100">
+    <header>
         <nav class="navbar navbar-expand-lg  bg-primary" >
-          <button id="theme-toggle" onclick="toggleDarkMode()">Dark</button>
             <div class="container-fluid bg-primary"  >
                 <a class="navbar-brand" href="{% url 'home' %}" style="color: white;" >
                     <img src="https://svgsilh.com/svg/23431-ffffff.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
@@ -46,15 +46,16 @@
                   </a>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
+                  {% comment %} <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}" style="color: white;" >Home</a>
+                  </li> {% endcomment %}
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/channels/{{ user.channel.id }}" style="color: white;" >Hello {{ user }}!</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'videos_create' %}" style="color: white;" >Upload</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'channels_create' %}" style="color: white;" >Channel</a>
-                  </li>
+
                   {% comment %} <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="{% url 'home' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white;" >
                       Dropdown
@@ -67,8 +68,8 @@
                     </ul> {% endcomment %}
 
                 </ul>
-                <form method="get" action="{% url 'search_results' %}">
-                  <input class="form-control me-2 bg-white text-black" type="search" name="q" placeholder="Search" aria-label="Search" style="border-radius: 10rem; width: 25rem;">
+                <form class="d-flex" role="search">
+                  <input class="form-control me-2 bg-primary" type="search" placeholder="Search" aria-label="Search" style="border-radius: 10rem; width: 25rem; color: white;">
                   <button class="btn btn-outline-light" type="submit" style="border-radius: 10rem;">Search</button>
                 </form>
               </div>
@@ -76,13 +77,13 @@
           </nav>
     </header>
 
-    <main class="container" style="margin-top: 4rem;">
+    <main class="container" style="margin-top: 4rem; margin-bottom: 5rem;">
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="footer sticky-bottom bg-secondary">
-      <div class="container-fluid">
+    <footer class="mt-auto bg-secondary">
+      <div class="container-fluid" >
         <p class="footer-text">Copyright © 2023 BeeHive, Inc.</p>
       </div>
     </footer>

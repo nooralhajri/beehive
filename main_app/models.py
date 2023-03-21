@@ -21,8 +21,9 @@ class Video(models.Model):
     description = models.TextField(max_length=250)
     thumbnail = models.ImageField(upload_to='main_app/static/uploads/', default='')
     video = models.FileField(upload_to='main_app/static/uploads/', null=True, validators=[FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
-    created_at = models.DateTimeField(auto_now_add=True)
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name='videos')
+    created_at = models.DateTimeField(default=django.utils.timezone.now)
+
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     tags = models.ManyToManyField('Tag', blank=True)
     liked_by = models.ManyToManyField(User, related_name='liked_videos', blank=True)
     disliked_by = models.ManyToManyField(User, related_name='disliked_videos', blank=True)
@@ -48,9 +49,13 @@ class Comment(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField(max_length=500)
-    created_at = models.DateTimeField(auto_now_add=True)
-    liked_by = models.ManyToManyField(User, related_name='liked_comments', blank=True)
-    disliked_by = models.ManyToManyField(User, related_name='disliked_comments', blank=True)
+    created_at = models.DateTimeField(default=django.utils.timezone.now)
+    timestamp = models.DateTimeField(default=django.utils.timezone.now)
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
+
+    # liked_by = models.ManyToManyField(User, blank=True)
+    # disliked_by = models.ManyToManyField(User, blank=True)
 
     def get_absolute_url(self):
         return reverse('videos_detail', kwargs={'pk': self.video.id})

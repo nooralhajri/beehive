@@ -8,17 +8,17 @@
 {% else %}
 <h3>UPLOAD NEW VIDEO</h3>
 {% endif %}
+
+
+
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <table>
         {{ form.as_table }}
     </table>
-    <div class="form-group">
-        <label for="{{ form.tags.auto_id }}">Tags:</label>
-        {{ form.tags }}
-    </div>
-    <input type="submit" class="btn btn-dark" value="ADD!">
+
+    <input type="submit" class="btn btn-outline-light" value="Upload">
 
 </form>
 
