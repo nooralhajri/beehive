@@ -20,8 +20,6 @@ class Video(models.Model):
     description = models.TextField(max_length=250)
     thumbnail = models.ImageField(upload_to='main_app/static/uploads/', default='')
     video = models.FileField(upload_to='main_app/static/uploads/', null=True, validators=[FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
-    likes = models.PositiveIntegerField(default=0)
-    dislikes = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=django.utils.timezone.now)
 
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
@@ -45,10 +43,7 @@ class Comment(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=500)
-    created_at = models.DateTimeField(default=django.utils.timezone.now)
-    timestamp = models.DateTimeField(default=django.utils.timezone.now)
-    likes = models.PositiveIntegerField(default=0)
-    dislikes = models.PositiveIntegerField(default=0)
+
 
     # liked_by = models.ManyToManyField(User, blank=True)
     # disliked_by = models.ManyToManyField(User, blank=True)

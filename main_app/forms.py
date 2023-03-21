@@ -16,16 +16,20 @@ class CreateChannelForm(forms.ModelForm):
 class CreateVideoForm(forms.ModelForm):
     class Meta:
         model = Video
-        fields = ['title', 'description', 'video', 'thumbnail', 'channel']
+ 
+        fields = ['title', 'description', 'video', 'thumbnail', 'channel', 'tags']
 
 
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}), 
-            'description': forms.Textarea(attrs={'class': 'form-control'}), 
-            'video': forms.FileInput(attrs={'class': 'form-control'}), 
-            'thumbnail': forms.FileInput(attrs={'class': 'form-control'}), 
-            'channel': forms.Select(attrs={'class': 'form-control'}), 
+            'title': forms.TextInput(attrs={'class': 'form-floating form-control bg-primary mb-3  form-text2' }), 
+            'description': forms.Textarea(attrs={'class': 'form-floating form-control bg-primary mb-3 ' }), 
+            'video': forms.FileInput(attrs={'class': 'form-floating form-control bg-primary mb-3 ' }), 
+            'thumbnail': forms.FileInput(attrs={'class': 'form-floating form-control bg-primary mb-3 ' }), 
+            'channel': forms.Select(attrs={'class': 'form-select form-control bg-primary mb-3 ' }),
+            'tags': forms.TextInput(attrs={'class': 'form-floating form-control bg-primary mb-3  form-text2' }), 
+  
         }
+
 
 
 class CommentForm(forms.ModelForm):
@@ -33,16 +37,6 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['content']
 
-class VideoForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
-    
-    class Meta:
-        model = Video
-        fields = ['title', 'video', 'thumbnail', 'tags'] 
-
-
-
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control'}),
+        }

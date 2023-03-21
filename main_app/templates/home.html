@@ -20,7 +20,7 @@
             </div>
             <h4> {{video.title}} </h4>
         </a>
-        <a> {{ video.channel }} </a>
+        <a href="/channels/{{ video.channel.id }}"> {{ video.channel }} </a>
         </div>
         {% endfor %}
     </div>

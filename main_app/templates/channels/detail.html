@@ -1,7 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class='channel-page'>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-4" style="border: solid black;">
+            <div class="image-div">
+                {% load static %}
+                <img class="" width="100px" height="100px" src="{% static channel.profilephoto|cut:'main_app/static/' %}" alt="profile pic" /> 
+            </div>
+            <div class="">
+                <h4 class="name">{{ channel.name }}</h4>
+                <p class="about">{{ channel.about }}</p>
+            </div>
+
+<div>
     <div class='nav-holder'>
         <nav class="">
             <ul class="">
@@ -13,14 +27,7 @@
     </div>
 
     <div class="channel-detail">
-        <div class="image-div">
-            {% load static %}
-            <img class="" width="100px" height="100px" src="{% static channel.profilephoto|cut:'main_app/static/' %}" alt="profile pic" /> 
-        </div>
-        <div class="">
-            <h4 class="name">{{ channel.name }}</h4>
-            <p class="about">{{ channel.about }}</p>
-        </div>
+ 
     </div>
 <div>
     {% if user.is_authenticated %}
@@ -38,17 +45,30 @@
   {% else %}
     <p>Please <a href="{% url 'login' %}">log in</a> to subscribe or unsubscribe.</p>
   {% endif %}
+
+
+
+
 </div>
     <a class="video-detail-link" href="videos_detail" >
-        <div class="videoList">
-            {% for video in channel.video_set.all %}
-            {% load static %}
-                <img class="" width="100px" height="100px" src="{% static video.thumbnail|cut:'main_app/static/uploads' %}" alt="thumbnail" />
-                 <p class="">{{ video.title }}</p>
-                 <!-- <p class="">{{ video.uploaded_at }}</p> -->
-            {% endfor %}
-        </div>
+
     </a>
 
 </div>
+        </div>
+
+        <div class="col-8" style="border: solid black;">
+            {% for video in channel.video_set.all %}
+            {% load static %}
+            <div style="width: 20rem; height: 11rem; border: none;">
+                <img src= {% static video.thumbnail|cut:'main_app/static/' %} class="card-img-top" alt="..." style="max-height: 100%; border-radius: 0.5rem;">
+            </div>            
+            <p class="">{{ video.title }}</p>
+                 <!-- <p class="">{{ video.uploaded_at }}</p> -->
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
 {% endblock  %}

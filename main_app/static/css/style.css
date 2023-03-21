@@ -27,3 +27,15 @@ h1 {
     color: white;
 }
 
+
+.form-floating .form-control, .form-floating .form-select {
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px white;
+}
+
+
+.form-text2 {
+    color: white;
+}
+

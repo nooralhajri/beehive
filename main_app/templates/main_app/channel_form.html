@@ -7,14 +7,21 @@
     {% else %}
         <h1 class="">Create New Channel</h1>
     {% endif %} 
-<div class="form-group">
-    <form action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <table class="form-control">
-            {{ form.as_table}}
-        </table>
-        <input class="btn btn-outline-light" type="submit" value="Submit!">
-    </form>
-</div>
+
+
+    <div class="container">
+        <div class="form">
+            <div class="form-group">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="form-control">
+                        {{ form.as_table}}
+                    </table>
+                    <input class="btn btn-outline-light" type="submit" value="Submit!">
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock  %}
 
