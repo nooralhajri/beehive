@@ -76,44 +76,16 @@ class VideoCreate(LoginRequiredMixin, CreateView):
     model = Video
     form_class = CreateVideoForm
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        form.instance.video = self.get_object()
-        form.save()
-        return HttpResponseRedirect(self.request.path)
 
 class VideoUpdate(LoginRequiredMixin, UpdateView):
     model = Video
     form_class = CreateVideoForm
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
 
 class VideoDelete(LoginRequiredMixin, DeleteView):
     model = Video
 
     def get_success_url(self):
         return reverse('home')
-
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Video.objects.all()
-        return Video.objects.filter(user=self.request.user)
 
 # CHANNEL CLASS BASED VIEWS
 def channels_index(request):
@@ -260,8 +232,8 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
 
         return JsonResponse(response_data)
 
-def comments (request, video_id):
-    video = Video.objects.get(id=video_id)
+def comments (request, pk):
+    video = Video.objects.get(id=pk)
     comments = Comment.objects.filter(video=video)
     return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
 
@@ -270,7 +242,7 @@ def comments (request, video_id):
 def search_results(request):
     query = request.GET.get('q')
     videos = Video.search(query)
-    paginator = Paginator(videos, 10)
+    paginator = Paginator(videos, 12)
     page = request.GET.get('page')
     videos = paginator.get_page(page)
     return render(request, 'search_results.html', {'videos': videos, 'query': query})
@@ -281,7 +253,7 @@ def my_view(request):
     objects = Video.objects.all()
 
     # Create a Paginator object with 10 objects per page
-    paginator = Paginator(objects, 10)
+    paginator = Paginator(objects, 12)
 
     # Get the current page number
     page_number = request.GET.get('page')

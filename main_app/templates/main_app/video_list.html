@@ -28,7 +28,7 @@
 
 </div>
 
-<div>
+{% comment %} <div>
     {% comment %} pagination {% endcomment %}
     
     <h3>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h3>
@@ -42,7 +42,7 @@
 {% if page_obj.has_next %}
     <a href="?page={{ page_obj.next_page_number }}">next</a>
 {% endif %}
-</div>
+</div> {% endcomment %}
 
 
 
