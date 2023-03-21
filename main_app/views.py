@@ -123,14 +123,13 @@ def channels_index(request):
 class ChannelCreate(LoginRequiredMixin, CreateView):
     model = Channel
     form_class = CreateChannelForm
+    success_url = '/channels/'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-    def get_success_url(self):
-        return reverse('channels_detail', kwargs={'pk': self.object.id})
-
+    
 # class ChannelDetail(LoginRequiredMixin, DetailView):
 #     model = Channel
 
