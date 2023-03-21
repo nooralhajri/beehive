@@ -34,23 +34,23 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
-        migrations.CreateModel(
-            name='CommentReply',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.CharField(max_length=100)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Tag',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-            ],
-        ),
+        # migrations.CreateModel(
+        #     name='CommentReply',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('content', models.CharField(max_length=100)),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        # ),
+        # migrations.CreateModel(
+        #     name='Tag',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('name', models.CharField(max_length=50, unique=True)),
+        #     ],
+        # ),
         migrations.CreateModel(
             name='Video',
             fields=[
@@ -73,72 +73,72 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
-        migrations.CreateModel(
-            name='ReportComment',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('reason', models.CharField(max_length=100)),
-                ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='ReportChannel',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('reason', models.CharField(max_length=100)),
-                ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.channel')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Report',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('reason', models.CharField(max_length=100)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Playlist',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('videos', models.ManyToManyField(blank=True, to='main_app.video')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Notification',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.CharField(max_length=100)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('is_read', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
+        # migrations.CreateModel(
+        #     name='ReportComment',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('reason', models.CharField(max_length=100)),
+        #         ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        # ),
+        # migrations.CreateModel(
+        #     name='ReportChannel',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('reason', models.CharField(max_length=100)),
+        #         ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.channel')),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        # ),
+        # migrations.CreateModel(
+        #     name='Report',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('reason', models.CharField(max_length=100)),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #         ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
+        #     ],
+        # ),
+        # migrations.CreateModel(
+        #     name='Playlist',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('name', models.CharField(max_length=100)),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #         ('videos', models.ManyToManyField(blank=True, to='main_app.video')),
+        #     ],
+        # ),
+        # migrations.CreateModel(
+        #     name='Notification',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('content', models.CharField(max_length=100)),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('is_read', models.BooleanField(default=False)),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        # ),
         migrations.AddField(
             model_name='comment',
             name='video',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video'),
         ),
-        migrations.CreateModel(
-            name='WatchLater',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
-            ],
-            options={
-                'unique_together': {('video', 'user')},
-            },
-        ),
+        # migrations.CreateModel(
+        #     name='WatchLater',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #         ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
+        #     ],
+        #     options={
+        #         'unique_together': {('video', 'user')},
+        #     },
+        # ),
         migrations.CreateModel(
             name='Subscription',
             fields=[
@@ -163,100 +163,100 @@ class Migration(migrations.Migration):
                 'unique_together': {('channel', 'user')},
             },
         ),
-        migrations.CreateModel(
-            name='PlaylistVideo',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('playlist', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.playlist')),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
-            ],
-            options={
-                'unique_together': {('playlist', 'video')},
-            },
-        ),
-        migrations.CreateModel(
-            name='LikeComment',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'unique_together': {('comment', 'user')},
-            },
-        ),
-        migrations.CreateModel(
-            name='Like',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
-            ],
-            options={
-                'unique_together': {('video', 'user')},
-            },
-        ),
-        migrations.CreateModel(
-            name='History',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
-            ],
-            options={
-                'unique_together': {('video', 'user')},
-            },
-        ),
-        migrations.CreateModel(
-            name='DislikeComment',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'unique_together': {('comment', 'user')},
-            },
-        ),
-        migrations.CreateModel(
-            name='Dislike',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
-            ],
-            options={
-                'unique_together': {('video', 'user')},
-            },
-        ),
-        migrations.CreateModel(
-            name='CommentReplyLike',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('comment_reply', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.commentreply')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'unique_together': {('comment_reply', 'user')},
-            },
-        ),
-        migrations.CreateModel(
-            name='CommentReplyDislike',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('comment_reply', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.commentreply')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'unique_together': {('comment_reply', 'user')},
-            },
-        ),
+        # migrations.CreateModel(
+        #     name='PlaylistVideo',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('playlist', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.playlist')),
+        #         ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
+        #     ],
+        #     options={
+        #         'unique_together': {('playlist', 'video')},
+        #     },
+        # ),
+        # migrations.CreateModel(
+        #     name='LikeComment',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        #     options={
+        #         'unique_together': {('comment', 'user')},
+        #     },
+        # ),
+        # migrations.CreateModel(
+        #     name='Like',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #         ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
+        #     ],
+        #     options={
+        #         'unique_together': {('video', 'user')},
+        #     },
+        # ),
+        # migrations.CreateModel(
+        #     name='History',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #         ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
+        #     ],
+        #     options={
+        #         'unique_together': {('video', 'user')},
+        #     },
+        # ),
+        # migrations.CreateModel(
+        #     name='DislikeComment',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.comment')),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        #     options={
+        #         'unique_together': {('comment', 'user')},
+        #     },
+        # ),
+        # migrations.CreateModel(
+        #     name='Dislike',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #         ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.video')),
+        #     ],
+        #     options={
+        #         'unique_together': {('video', 'user')},
+        #     },
+        # ),
+        # migrations.CreateModel(
+        #     name='CommentReplyLike',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('comment_reply', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.commentreply')),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        #     options={
+        #         'unique_together': {('comment_reply', 'user')},
+        #     },
+        # ),
+        # migrations.CreateModel(
+        #     name='CommentReplyDislike',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('comment_reply', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.commentreply')),
+        #         ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        #     options={
+        #         'unique_together': {('comment_reply', 'user')},
+        #     },
+        # ),
     ]

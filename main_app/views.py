@@ -28,6 +28,7 @@ def home(request):
         page = request.GET.get('page')
         videos = paginator.get_page(page)
         return render(request, 'home.html', {'videos': videos})
+    
 
 # Sign up function
 def signup(request):
@@ -72,29 +73,12 @@ class VideoList(ListView):
     template_name = 'video_list.html'
     paginate_by = 10  # Show 10 videos per page
 
-class VideoCreate(LoginRequiredMixin, CreateView):
+class VideoCreate(CreateView):
     model = Video
     form_class = CreateVideoForm
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        form.instance.video = self.get_object()
-        form.save()
-        return HttpResponseRedirect(self.request.path)
+class VideoDetail(DetailView):
+    model = Video
 
 class VideoUpdate(LoginRequiredMixin, UpdateView):
     model = Video
@@ -245,8 +229,8 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
 
         return JsonResponse(response_data)
 
-def comments (request, video_id):
-    video = Video.objects.get(id=video_id)
+def comments (request, pk):
+    video = Video.objects.get(id=pk)
     comments = Comment.objects.filter(video=video)
     return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
 
@@ -266,7 +250,7 @@ def my_view(request):
     objects = Video.objects.all()
 
     # Create a Paginator object with 10 objects per page
-    paginator = Paginator(objects, 10)
+    paginator = Paginator(objects, 12)
 
     # Get the current page number
     page_number = request.GET.get('page')
@@ -274,5 +258,5 @@ def my_view(request):
     # Get the Page object for the current page
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'video_list.html', {'page_obj': page_obj})
+    return render(request, 'home.html', {'page_obj': page_obj})
 
