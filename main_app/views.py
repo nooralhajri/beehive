@@ -324,5 +324,9 @@ class PlaylistDelete(LoginRequiredMixin, DeleteView):
         return Playlist.objects.filter(user=self.request.user)
     
 
-        
+
+def comments (request, video_id):
+    video = Video.objects.get(id=video_id)
+    comments = Comment.objects.filter(video=video)
+    return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
 

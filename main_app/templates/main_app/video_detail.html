@@ -43,25 +43,15 @@
 {% endif %}
 </div>
 <div>
-{% for comment in video.comment_set.all|dictsort:"timestamp" %}
-   {% if video.comment_set.all %}
-    <h3>Comments:</h3>
-     <ul>
-        {% for comment in video.comment_set.all %}
-            <li>
-                <strong>{{ comment.user.username }}:</strong> {{ comment.content }}
-                {% if request.user == comment.user or request.user.is_staff %}
-                    <form method="post" action="{% url 'comment_delete' comment.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                {% endif %}
-            </li>
+    <ul>
+        {%for c in comments%}
+          
+            <li>{{c.content}}</li>
+         
         {% endfor %}
-    </ul>
-    {% endif %}
-{% endfor %}
+         </ul>
 </div>
+
 
 <div class="like-dislike">
     <!-- Adding like/dislike functionality-->
