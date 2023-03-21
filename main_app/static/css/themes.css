@@ -1,12 +1,47 @@
-/* Default Light Theme */
+/* Default theme */
 body {
-    background-color: #fff;
-    color: #333;
-  }
-  
-  /* Dark Theme */
-  body.dark-theme {
-    background-color: #222;
-    color: #f1f1f1;
-  }
-  
+  background-color: #fff;
+  color: #333;
+}
+
+/* Dark theme */
+body.dark {
+  background-color: #222;
+  color: #fff;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #fff;
+  color: #333;
+}
+
+/* Dark Navbar */
+.navbar.dark {
+  background-color: #222;
+  color: #fff;
+}
+
+/* Footer */
+.footer {
+  background-color: #fff;
+  color: #333;
+}
+
+/* Dark Footer */
+.footer.dark {
+  background-color: #222;
+  color: #fff;
+}
+
+/* Header */
+.header {
+  background-color: #fff;
+  color: #333;
+}
+
+/* Dark Header */
+.header.dark {
+  background-color: #222;
+  color: #fff;
+}

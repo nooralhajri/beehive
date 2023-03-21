@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Search results for "{{ query }}"</h1>
+  {% if videos %}
+    <ul>
+      {% for video in videos %}
+        <li>
+          <a href="{% url 'video_detail' video.id %}">{{ video.title }}</a>
+          <p>{{ video.description }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="pagination">
+      <span class="step-links">
+          {% if videos.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ videos.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current-page">
+              Page {{ videos.number }} of {{ videos.paginator.num_pages }}.
+          </span>
+
+          {% if videos.has_next %}
+              <a href="?page={{ videos.next_page_number }}">next</a>
+              <a href="?page={{ videos.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+    </div>
+  {% else %}
+    <p>No results found for "{{ query }}".</p>
+  {% endif %}
+{% endblock %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Channel, Tag, Video, Comment
+from .models import Channel, Video, Comment
 
 class CreateChannelForm(forms.ModelForm):
     class Meta:
@@ -17,7 +17,7 @@ class CreateVideoForm(forms.ModelForm):
     class Meta:
         model = Video
  
-        fields = ['title', 'description', 'video', 'thumbnail', 'channel', 'tags']
+        fields = ['title', 'description', 'video', 'thumbnail', 'channel']
 
 
         widgets = {
@@ -26,8 +26,6 @@ class CreateVideoForm(forms.ModelForm):
             'video': forms.FileInput(attrs={'class': 'form-floating form-control bg-primary mb-3 ' }), 
             'thumbnail': forms.FileInput(attrs={'class': 'form-floating form-control bg-primary mb-3 ' }), 
             'channel': forms.Select(attrs={'class': 'form-select form-control bg-primary mb-3 ' }),
-            'tags': forms.TextInput(attrs={'class': 'form-floating form-control bg-primary mb-3  form-text2' }), 
-  
         }
 
 

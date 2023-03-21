@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block content %}
 {% load static %}
 
@@ -42,6 +41,7 @@
   <p>Please <a href="{% url 'login' %}">log in</a> to add a comment.</p>
 {% endif %}
 </div>
+
 <div>
     <ul>
         {%for c in comments%}
