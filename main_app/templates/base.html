@@ -34,9 +34,15 @@
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'videos_create' %}" style="color: white;" >Upload</a>
                   </li>
+                  {% if user.is_authenticated  %}
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}" style="color: white;" >Log Out</a>
                   </li>
+                  {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}" style="color: white;" >Log In</a>
+                  </li>
+                  {% endif %}
 
 
                 </ul>
