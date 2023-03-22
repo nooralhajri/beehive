@@ -12,11 +12,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CreateChannelForm, CreateVideoForm, CommentForm
+from .forms import CreateChannelForm, CreateVideoForm, RegisterUserForm, CommentForm, ChangePasswordForm
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-# Home view
+# Home view  
 def home(request):
     search_query = request.GET.get('q')
     if search_query:
@@ -31,14 +32,15 @@ def home(request):
             videos = paginator.page(1)
         except EmptyPage:
             videos = paginator.page(paginator.num_pages)
-        return render(request, 'home.html', {'page_obj': videos})
+        return render(request, 'home.html', {'videos': videos})
+    
     
 
 # Sign up function
 def signup(request):
     error_message = ''
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterUserForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -46,7 +48,7 @@ def signup(request):
             return redirect('home')
         else:
             error_message = 'Invalid sign up - try again'
-    form = UserCreationForm()
+    form = RegisterUserForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
@@ -61,14 +63,14 @@ def profile(request):
 @login_required
 def change_password(request):
     if request.method == 'POST':
-        form = PasswordChangeForm(user=request.user, data=request.POST)
+        form = ChangePasswordForm(user=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
             return redirect('home')
     else:
-        form = PasswordChangeForm(user=request.user)
+        form = ChangePasswordForm(user=request.user)
     return render(request, 'registration/change_password.html', {'form': form})
 
 
@@ -107,16 +109,18 @@ class VideoDetail(DetailView):
         context['comments'] = comments
         context['form'] = CommentForm()
         return context
-
+    
 class VideoUpdate(LoginRequiredMixin, UpdateView):
     model = Video
     form_class = CreateVideoForm
+
 
 class VideoDelete(LoginRequiredMixin, DeleteView):
     model = Video
 
     def get_success_url(self):
         return reverse('home')
+
 
 # CHANNEL CLASS BASED VIEWS
 def channels_index(request):
@@ -216,6 +220,9 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         form.instance.video_id = self.kwargs['video_id']
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('videos_detail', kwargs={'pk': self.object.video.pk})
 
     def get_success_url(self):
         return reverse('videos_detail', kwargs={'pk': self.object.video.pk})
@@ -254,7 +261,6 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
 
         return JsonResponse(response_data)
 
-
 # Search Views
 
 def search_results(request):
@@ -269,8 +275,13 @@ def search_results(request):
 def home(request):
     # Query all videos
     videos = Video.objects.all()
+def my_view(request):
+    # Query all objects
+    videos = Video.objects.all()
 
     # Create a Paginator object with 12 videos per page
+    paginator = Paginator(videos, 12)
+    # Create a Paginator object with 10 objects per page
     paginator = Paginator(videos, 12)
 
     # Get the current page number

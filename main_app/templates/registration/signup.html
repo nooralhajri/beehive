@@ -7,11 +7,19 @@
  <p class="red-text">{{error_message}}</p>
  {% endif %}
 
- <form method="post" action="{%url 'signup'%}">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" class="btn btn-dark" value="Sign Up">
-    
- </form>
+
+ <div class="container">
+   <div class="row">
+      <div class="col-5">
+         <form method="post" action="{%url 'signup'%}">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" class="btn btn-outline-light" value="Sign Up" style="border-radius: 4rem;">
+         </form>
+      </div>
+   </div>
+</div>
  
  {% endblock %}
+
+

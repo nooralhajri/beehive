@@ -46,8 +46,20 @@ class Comment(models.Model):
     created_at = models.DateTimeField(default=django.utils.timezone.now)
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    created_at = models.DateTimeField(default=django.utils.timezone.now)
+    content = models.TextField(max_length=500)
+
+
+    def get_absolute_url(self):
+        return reverse('videos_detail', kwargs={'pk': self.video.id})
+    
+    def __str__(self):
+        return f'{self.user.username}: {self.content[:30]}'
+
 
 class Search(models.Model):
     search = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=django.utils.timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='searches')
+
+
