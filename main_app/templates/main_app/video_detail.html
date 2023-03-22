@@ -12,7 +12,7 @@
     {% else %}
       <p>Please <a href="{% url 'login' %}">log in</a> to subscribe or unsubscribe.</p>
     {% endif %}
-    </div>
+</div>
     
 <div class="container">
     <div class="row">
@@ -21,6 +21,7 @@
                 <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
             </video>
             <h1>{{ video.title }}</h1>
+            <p>{{ video.description }}</p>
             <div class="card-action">
                 <a href="{% url 'videos_update' video.id %}">EDIT</a>
                 <a href="{% url 'videos_delete' video.id %}">DELETE</a>
@@ -28,28 +29,30 @@
         </div>
     </div>
 </div>
-
+<br><br>
 <div>
 {% if user.is_authenticated %}
   <h3>Add a comment</h3>
   <form method="post" action="{% url 'comment_create' video.id %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit Comment</button>
   </form>
 {% else %}
   <p>Please <a href="{% url 'login' %}">log in</a> to add a comment.</p>
 {% endif %}
 </div>
-
+<br><br>
 <div>
-    <ul>
-        {%for c in comments%}
-          
-            <li>{{c.content}}</li>
-         
-        {% endfor %}
-         </ul>
+  <h2>Comments</h2>
+  {% for comment in comments %}
+      <div class="comment mb-3">
+          <strong>{{ comment.author }}:</strong>
+          <p>{{ comment.text }}</p>
+      </div>
+  {% empty %}
+      <p>No comments yet.</p>
+  {% endfor %}
 </div>
 
 
@@ -58,6 +61,5 @@
     <button class="btn btn-success">Like</button>
     <button class="btn btn-danger">Dislike</button>
 </div>
-
 
 {% endblock %}

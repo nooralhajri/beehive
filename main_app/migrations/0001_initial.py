@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 ('video', models.FileField(null=True, upload_to='main_app/static/uploads/', validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main_app.channel')),
-                ('tags', models.ManyToManyField(blank=True, to='main_app.tag')),
+                # ('tags', models.ManyToManyField(blank=True, to='main_app.tag')),
             ],
         ),
         migrations.CreateModel(

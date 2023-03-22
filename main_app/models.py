@@ -22,7 +22,6 @@ class Video(models.Model):
     thumbnail = models.ImageField(upload_to='main_app/static/uploads/', default='')
     video = models.FileField(upload_to='main_app/static/uploads/', null=True, validators=[FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
     created_at = models.DateTimeField(default=django.utils.timezone.now)
-
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
@@ -36,26 +35,19 @@ class Video(models.Model):
 class Subscriber(models.Model):
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name='subscribers')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=django.utils.timezone.now)
 
     class Meta:
         unique_together = ('channel', 'user')
 
 
 class Comment(models.Model):
+    content = models.TextField(max_length=300)
+    created_at = models.DateTimeField(default=django.utils.timezone.now)
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
-    content = models.TextField(max_length=500)
-
-
-    def get_absolute_url(self):
-        return reverse('videos_detail', kwargs={'pk': self.video.id})
-    
-    def __str__(self):
-        return f'{self.user.username}: {self.content[:30]}'
-
 
 class Search(models.Model):
     search = models.CharField(max_length=100)
-    search_date = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=django.utils.timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='searches')

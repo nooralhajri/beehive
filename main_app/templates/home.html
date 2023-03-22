@@ -36,39 +36,34 @@
         {% endfor %}
     </div>
 
-    <div>
     {% comment %} pagination {% endcomment %}
-    
-    <h3>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h3>
-    <div class="row">
-{% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-{% endif %}
-
-<span class="current-page">{{ page_obj.number }}</span>
-
-{% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">next</a>
-{% endif %}
+ <div class="d-flex justify-content-center my-4">
+        {% if videos.has_other_pages %}
+            <ul class="pagination">
+                {% if videos.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ videos.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+                {% for i in videos.paginator.page_range %}
+                    {% if videos.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if videos.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ videos.next_page_number }}">&raquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ videos.paginator.num_pages }}">Last</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
 
 </div>
-</div>
-<div>
-    {% comment %} pagination {% endcomment %}
-    
-    <h3>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h3>
-    <div class="row">
-{% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-{% endif %}
-
-<span class="current-page">{{ page_obj.number }}</span>
-
-{% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">next</a>
-{% endif %}
-</div>
-
 
 
 {% endblock %}

@@ -36,5 +36,6 @@ class CommentForm(forms.ModelForm):
         fields = ['content']
 
         widgets = {
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control bg-primary mb-3 ' }), 
         }
+

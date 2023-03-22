@@ -2,20 +2,19 @@ from django.forms import ValidationError
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import views as auth_views
+from requests import request
 from .models import Channel, Video, Subscriber, Comment
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import login
-from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormMixin, FormView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CreateChannelForm, CreateVideoForm, CommentForm
-from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
-from django.core.paginator import Paginator
-from django.db.models import Q
+from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Home view
 def home(request):
@@ -23,11 +22,16 @@ def home(request):
     if search_query:
         return redirect('search_results', search_query=search_query)
     else:
-        videos = Video.objects.all()
-        paginator = Paginator(videos, 10)
+        video_list = Video.objects.all()
+        paginator = Paginator(video_list, 12)
         page = request.GET.get('page')
-        videos = paginator.get_page(page)
-        return render(request, 'home.html', {'videos': videos})
+        try:
+            videos = paginator.page(page)
+        except PageNotAnInteger:
+            videos = paginator.page(1)
+        except EmptyPage:
+            videos = paginator.page(paginator.num_pages)
+        return render(request, 'home.html', {'page_obj': videos})
     
 
 # Sign up function
@@ -67,11 +71,26 @@ def change_password(request):
         form = PasswordChangeForm(user=request.user)
     return render(request, 'registration/change_password.html', {'form': form})
 
+
 # Video class-based views
 class VideoList(ListView):
     model = Video
     template_name = 'video_list.html'
-    paginate_by = 10  # Show 10 videos per page
+    paginate_by = 12  # Show 12 videos per page
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        video_list = Video.objects.all()
+        paginator = Paginator(video_list, 12)
+        page = self.request.GET.get('page')
+        try:
+            videos = paginator.page(page)
+        except PageNotAnInteger:
+            videos = paginator.page(1)
+        except EmptyPage:
+            videos = paginator.page(paginator.num_pages)
+        context['page_obj'] = videos
+        return context
 
 class VideoCreate(CreateView):
     model = Video
@@ -79,6 +98,15 @@ class VideoCreate(CreateView):
 
 class VideoDetail(DetailView):
     model = Video
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        video = self.object
+        # to retrieve all comments associated with the current video
+        comments = Comment.objects.filter(video=video)
+        context['comments'] = comments
+        context['form'] = CommentForm()
+        return context
 
 class VideoUpdate(LoginRequiredMixin, UpdateView):
     model = Video
@@ -192,12 +220,35 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 # Add Comment Views
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
-    fields = ['content']
+    form_class = CommentForm
+    template_name = 'main_app/comment_form.html'
 
     def form_valid(self, form):
-        form.instance.video_id = self.kwargs['video_pk']
+        form.instance.video_id = self.kwargs['video_id']
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('video_detail', kwargs={'pk': self.object.video.pk})
+
+    
+    # to set the video and user fields before saving the comment:
+    # def create_comment(request, video_id):
+    #     video = get_object_or_404(Video, video_id)
+    #     if request.method == 'POST':
+    #         form = CommentForm(request.POST)
+    #         if form.is_valid():
+    #             comment = form.save(commit=False)
+    #             comment.video = video
+    #             comment.user = request.user
+    #             comment.save()
+    #             return redirect('main_app/video_detail.html', video_id=video.id)
+    #     else:
+    #         form = CommentForm()
+    #         # the comment form is already integrated into video_detail.html
+    #     return render(request, 'create_comment.html', {'form': form})
+
+
 
 class CommentDelete(LoginRequiredMixin, DeleteView):
     model = Comment
@@ -235,10 +286,12 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
 
         return JsonResponse(response_data)
 
-def comments (request, pk):
-    video = Video.objects.get(id=pk)
-    comments = Comment.objects.filter(video=video)
-    return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
+
+# def comments (request, pk):
+#     video = Video.objects.get(id=pk)
+#     comments = Comment.objects.filter(video=video)
+#     return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
+
 
 # Search Views
 
@@ -251,12 +304,12 @@ def search_results(request):
     return render(request, 'search_results.html', {'videos': videos, 'query': query})
 
 # ADDING PAGINATION
-def my_view(request):
-    # Query all objects
-    objects = Video.objects.all()
+def home(request):
+    # Query all videos
+    videos = Video.objects.all()
 
-    # Create a Paginator object with 10 objects per page
-    paginator = Paginator(objects, 12)
+    # Create a Paginator object with 12 videos per page
+    paginator = Paginator(videos, 12)
 
     # Get the current page number
     page_number = request.GET.get('page')
@@ -264,5 +317,5 @@ def my_view(request):
     # Get the Page object for the current page
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'home.html', {'page_obj': page_obj})
+    return render(request, 'home.html', {'videos': page_obj})
 
