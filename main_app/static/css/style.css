@@ -39,3 +39,6 @@ h1 {
     color: white;
 }
 
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: white;
+  }

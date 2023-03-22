@@ -8,7 +8,7 @@
     {% csrf_token %}
     <!-- the form displays as p -->
     {{ form.as_p }}
-    <input type="submit" class="btn" value="login">
+    <input type="submit" class="btn" value="login" style="border-radius: 4rem;">
     <input type="hidden" name="next" value="{{ next }}">
   </form>
 

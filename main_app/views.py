@@ -12,7 +12,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CreateChannelForm, CreateVideoForm, CommentForm
+from .forms import CreateChannelForm, CreateVideoForm, RegisterUserForm
 from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -34,7 +34,7 @@ def home(request):
 def signup(request):
     error_message = ''
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterUserForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -42,7 +42,7 @@ def signup(request):
             return redirect('home')
         else:
             error_message = 'Invalid sign up - try again'
-    form = UserCreationForm()
+    form = RegisterUserForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
