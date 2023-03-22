@@ -229,7 +229,7 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('video_detail', kwargs={'pk': self.object.video.pk})
+        return reverse('videos_detail', kwargs={'pk': self.object.video.pk})
 
     
     # to set the video and user fields before saving the comment:

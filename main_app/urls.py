@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('videos/', views.VideoList.as_view(), name='videos_index'),
     # path('videos/<int:pk>', views.comments, name='videos_detail'),
-    path('video/<int:pk>/', views.VideoDetail.as_view(), name='video_detail'),
+    path('videos/<int:pk>/', views.VideoDetail.as_view(), name='videos_detail'),
     path('videos/create', views.VideoCreate.as_view(), name='videos_create'),
     path('videos/update/<int:pk>', views.VideoUpdate.as_view(), name='videos_update'),
     path('videos/delete/<int:pk>', views.VideoDelete.as_view(), name='videos_delete'),
