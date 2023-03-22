@@ -14,7 +14,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CreateChannelForm, CreateVideoForm, RegisterUserForm, CommentForm, ChangePasswordForm
 from django.http import JsonResponse
-from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Home view  
