@@ -42,7 +42,7 @@ class Subscriber(models.Model):
 
 
 class Comment(models.Model):
-    content = models.TextField(max_length=300)
+    content = models.TextField(max_length=500)
     created_at = models.DateTimeField(default=django.utils.timezone.now)
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')

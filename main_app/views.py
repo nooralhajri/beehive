@@ -155,18 +155,7 @@ class ChannelDetail(LoginRequiredMixin, DetailView):
         context['is_subscribed'] = is_subscribed
         return context
     
-# class ChannelDetail(LoginRequiredMixin, DetailView):
-#     model = Channel
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         channel = self.object
-#         is_subscribed = False
-#         if self.request.user.is_authenticated:
-#             is_subscribed = Subscriber.objects.filter(channel=channel, user=self.request.user).exists()
-#         context['is_subscribed'] = is_subscribed
-#         return context
-    
+# look at this missing from Ali
 def channel_detail(request, channel_id):
     print("channel, ", channel_id)
     channel = Channel.objects.get(id = channel_id)
@@ -202,20 +191,20 @@ def subscribe(request, channel_id):
 # Password reset views
 
 class PasswordResetView(auth_views.PasswordResetView):
-    template_name = 'registration/password_reset.html'
-    email_template_name = 'registration/password_reset_email.html'
-    subject_template_name = 'registration/password_reset_subject.txt'
+    template_name = 'commons/password_reset_form.html'
+    email_template_name = 'commons/password_reset_email.html'
+    subject_template_name = 'commons/password_reset_subject.txt'
     success_url = reverse_lazy('password_reset_done')
 
 class PasswordResetDoneView(auth_views.PasswordResetDoneView):
-    template_name = 'registration/password_reset_done.html'
+    template_name = 'commons/password_reset_done.html'
 
 class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
-    template_name = 'registration/password_reset_confirm.html'
+    template_name = 'commons/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
 
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
-    template_name = 'registration/password_reset_complete.html'
+    template_name = 'commons/password_reset_complete.html'
 
 # Add Comment Views
 class CommentCreate(LoginRequiredMixin, CreateView):
@@ -231,23 +220,6 @@ class CommentCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('videos_detail', kwargs={'pk': self.object.video.pk})
 
-    
-    # to set the video and user fields before saving the comment:
-    # def create_comment(request, video_id):
-    #     video = get_object_or_404(Video, video_id)
-    #     if request.method == 'POST':
-    #         form = CommentForm(request.POST)
-    #         if form.is_valid():
-    #             comment = form.save(commit=False)
-    #             comment.video = video
-    #             comment.user = request.user
-    #             comment.save()
-    #             return redirect('main_app/video_detail.html', video_id=video.id)
-    #     else:
-    #         form = CommentForm()
-    #         # the comment form is already integrated into video_detail.html
-    #     return render(request, 'create_comment.html', {'form': form})
-
 
 
 class CommentDelete(LoginRequiredMixin, DeleteView):
@@ -256,10 +228,6 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse('videos_detail', kwargs={'pk': self.object.video.id})
 
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Comment.objects.all()
-        return Comment.objects.filter(user=self.request.user)
 
 # Add Subscriber Views
 @login_required
@@ -285,12 +253,6 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
             response_data = {"status": "error", "message": str(e)}
 
         return JsonResponse(response_data)
-
-
-# def comments (request, pk):
-#     video = Video.objects.get(id=pk)
-#     comments = Comment.objects.filter(video=video)
-#     return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
 
 
 # Search Views
