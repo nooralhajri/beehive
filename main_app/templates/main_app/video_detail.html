@@ -47,8 +47,8 @@
   <h2>Comments</h2>
   {% for comment in comments %}
       <div class="comment mb-3">
-          <strong>{{ comment.author }}:</strong>
-          <p>{{ comment.text }}</p>
+          <strong>{{ comment.user }}</strong>
+          <p>{{ comment.content }}</p>
       </div>
   {% empty %}
       <p>No comments yet.</p>
