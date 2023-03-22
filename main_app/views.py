@@ -12,22 +12,28 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CreateChannelForm, CreateVideoForm, RegisterUserForm
-from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
+from .forms import CreateChannelForm, CreateVideoForm, RegisterUserForm, CommentForm, ChangePasswordForm
+from django.http import JsonResponse
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-# Home view
+# Home view  
 def home(request):
     search_query = request.GET.get('q')
     if search_query:
         return redirect('search_results', search_query=search_query)
     else:
-        videos = Video.objects.all()
-        paginator = Paginator(videos, 10)
+        video_list = Video.objects.all()
+        paginator = Paginator(video_list, 12)
         page = request.GET.get('page')
-        videos = paginator.get_page(page)
+        try:
+            videos = paginator.page(page)
+        except PageNotAnInteger:
+            videos = paginator.page(1)
+        except EmptyPage:
+            videos = paginator.page(paginator.num_pages)
         return render(request, 'home.html', {'videos': videos})
+    
     
 
 # Sign up function
@@ -57,21 +63,36 @@ def profile(request):
 @login_required
 def change_password(request):
     if request.method == 'POST':
-        form = PasswordChangeForm(user=request.user, data=request.POST)
+        form = ChangePasswordForm(user=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
             return redirect('home')
     else:
-        form = PasswordChangeForm(user=request.user)
+        form = ChangePasswordForm(user=request.user)
     return render(request, 'registration/change_password.html', {'form': form})
+
 
 # Video class-based views
 class VideoList(ListView):
     model = Video
     template_name = 'video_list.html'
-    paginate_by = 10  # Show 10 videos per page
+    paginate_by = 12  # Show 12 videos per page
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        video_list = Video.objects.all()
+        paginator = Paginator(video_list, 12)
+        page = self.request.GET.get('page')
+        try:
+            videos = paginator.page(page)
+        except PageNotAnInteger:
+            videos = paginator.page(1)
+        except EmptyPage:
+            videos = paginator.page(paginator.num_pages)
+        context['page_obj'] = videos
+        return context
 
 class VideoCreate(CreateView):
     model = Video
@@ -80,13 +101,19 @@ class VideoCreate(CreateView):
 class VideoDetail(DetailView):
     model = Video
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        video = self.object
+        # to retrieve all comments associated with the current video
+        comments = Comment.objects.filter(video=video)
+        context['comments'] = comments
+        context['form'] = CommentForm()
+        return context
+    
 class VideoUpdate(LoginRequiredMixin, UpdateView):
     model = Video
     form_class = CreateVideoForm
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
 
 class VideoDelete(LoginRequiredMixin, DeleteView):
     model = Video
@@ -94,10 +121,6 @@ class VideoDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse('home')
 
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Video.objects.all()
-        return Video.objects.filter(user=self.request.user)
 
 # CHANNEL CLASS BASED VIEWS
 def channels_index(request):
@@ -168,30 +191,34 @@ def subscribe(request, channel_id):
 # Password reset views
 
 class PasswordResetView(auth_views.PasswordResetView):
-    template_name = 'registration/password_reset.html'
-    email_template_name = 'registration/password_reset_email.html'
-    subject_template_name = 'registration/password_reset_subject.txt'
+    template_name = 'commons/password_reset_form.html'
+    email_template_name = 'commons/password_reset_email.html'
+    subject_template_name = 'commons/password_reset_subject.txt'
     success_url = reverse_lazy('password_reset_done')
 
 class PasswordResetDoneView(auth_views.PasswordResetDoneView):
-    template_name = 'registration/password_reset_done.html'
+    template_name = 'commons/password_reset_done.html'
 
 class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
-    template_name = 'registration/password_reset_confirm.html'
+    template_name = 'commons/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
 
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
-    template_name = 'registration/password_reset_complete.html'
+    template_name = 'commons/password_reset_complete.html'
 
 # Add Comment Views
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
-    fields = ['content']
+    form_class = CommentForm
+    template_name = 'main_app/comment_form.html'
 
     def form_valid(self, form):
-        form.instance.video_id = self.kwargs['video_pk']
+        form.instance.video_id = self.kwargs['video_id']
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('videos_detail', kwargs={'pk': self.object.video.pk})
 
 class CommentDelete(LoginRequiredMixin, DeleteView):
     model = Comment
@@ -199,10 +226,6 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse('videos_detail', kwargs={'pk': self.object.video.id})
 
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Comment.objects.all()
-        return Comment.objects.filter(user=self.request.user)
 
 # Add Subscriber Views
 @login_required
@@ -229,11 +252,6 @@ class SubscriberCreate(LoginRequiredMixin, CreateView):
 
         return JsonResponse(response_data)
 
-def comments (request, pk):
-    video = Video.objects.get(id=pk)
-    comments = Comment.objects.filter(video=video)
-    return render(request, 'main_app/video_detail.html', {'comments': comments, 'video': video}) 
-
 # Search Views
 
 def search_results(request):
@@ -247,10 +265,10 @@ def search_results(request):
 # ADDING PAGINATION
 def my_view(request):
     # Query all objects
-    objects = Video.objects.all()
+    videos = Video.objects.all()
 
     # Create a Paginator object with 10 objects per page
-    paginator = Paginator(objects, 12)
+    paginator = Paginator(videos, 12)
 
     # Get the current page number
     page_number = request.GET.get('page')

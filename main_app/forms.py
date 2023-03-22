@@ -1,6 +1,6 @@
 from django import forms
 from .models import Channel, Video, Comment, User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 
 
@@ -39,13 +39,13 @@ class CommentForm(forms.ModelForm):
         fields = ['content']
 
         widgets = {
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control bg-primary mb-3'}),
         }
 
 
 class RegisterUserForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={
-        'class':'form-control bg-primary text-light',
+        'class':'form-control bg-primary text-light ::-webkit-input-placeholder',
         'style': 'border-radius: 4rem; color:white; color: white;::placeholder {color: white;}',
         'placeholder' : 'hello@beehive.com'
         }))
@@ -79,3 +79,19 @@ class RegisterUserForm(UserCreationForm):
             'class': 'form-control bg-primary text-light',
             'style': 'border-radius: 4rem; color: white;'
         })
+
+
+class ChangePasswordForm(PasswordChangeForm):
+    class Meta:
+        model = User
+        fields = ['old_password', 'new_password1', 'new_password2']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control bg-primary text-light',
+                'style': 'border-radius: 4rem; color: white;'
+            })
+
+

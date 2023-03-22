@@ -21,6 +21,7 @@
                 <source src={% static video.video|cut:'main_app/static/' %} type="video/mp4">
             </video>
             <h1>{{ video.title }}</h1>
+            <p>{{ video.description }}</p>
             <div class="card-action">
                 <a href="{% url 'videos_update' video.id %}">EDIT</a>
                 <a href="{% url 'videos_delete' video.id %}">DELETE</a>
@@ -42,14 +43,18 @@
 {% endif %}
 </div>
 
+<br><br>
+
 <div>
-    <ul>
-        {%for c in comments%}
-          
-            <li>{{c.content}}</li>
-         
-        {% endfor %}
-         </ul>
+  <h2>Comments</h2>
+  {% for comment in comments %}
+      <div class="comment mb-3">
+          <strong>{{ comment.user }}</strong>
+          <p>{{ comment.content }}</p>
+      </div>
+  {% empty %}
+      <p>No comments yet.</p>
+  {% endfor %}
 </div>
 
 
