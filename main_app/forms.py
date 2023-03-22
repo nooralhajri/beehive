@@ -69,15 +69,18 @@ class RegisterUserForm(UserCreationForm):
         super(RegisterUserForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
             'class': 'form-control bg-primary text-light',
-            'style': 'border-radius: 4rem; color: white;'
+            'style': 'border-radius: 4rem; color: white;',
+            'placehodler': 'BeeHive123'
         })
         self.fields['password1'].widget.attrs.update({
             'class': 'form-control bg-primary text-light',
-            'style': 'border-radius: 4rem; color: white;'
+            'style': 'border-radius: 4rem; color: white;',
+            'placehodler': 'password'
         })
         self.fields['password2'].widget.attrs.update({
             'class': 'form-control bg-primary text-light',
-            'style': 'border-radius: 4rem; color: white;'
+            'style': 'border-radius: 4rem; color: white;',
+            'placehodler': 'password confirmation'
         })
 
 
